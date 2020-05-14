@@ -12,7 +12,7 @@
 ##
 ## The _() surrounding the string marks it as eligible for translation.
 
-define config.name = _("gruposiete")
+define config.name = _("The Mystery of Dos Casas")
 
 
 ## Determines if the title given above is shown on the main menu screen. Set
@@ -30,6 +30,15 @@ define config.version = "1.0"
 ## triple-quotes, and leave a blank line between paragraphs.
 
 define gui.about = _p("""
+{b}Created for ICS 166 Spring 2020\nwith Craig Morrison{/b}\n
+{i}Grupo Siete{/i}\n
+Andi Yu,
+Andrew Zhao,
+Arthur Tham,
+Benjamin Tolan,
+Cole Medley,
+Rolando Hernandez,
+Samuel Bordet.
 """)
 
 
@@ -83,12 +92,12 @@ define config.intra_transition = dissolve
 
 ## A transition that is used after a game has been loaded.
 
-define config.after_load_transition = None
+define config.after_load_transition = dissolve
 
 
 ## Used when entering the main menu after the game has ended.
 
-define config.end_game_transition = None
+define config.end_game_transition = dissolve
 
 
 ## A variable to set the transition used when the game starts does not exist.
