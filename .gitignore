@@ -3,6 +3,7 @@ log.txt
 traceback.txt
 gruposiete-1.0-dists
 gruposiete/game/saves
+*.bak
 *.rpyc
 *.rpyb
 *.save
