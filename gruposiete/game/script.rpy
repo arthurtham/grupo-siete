@@ -28,9 +28,9 @@ label start:
 label romeo_father_start:
     scene bg room
 
-    show makoto serious
+    #show makoto serious
 
-    play music "audio/lesson.mp3"
+    #play music "audio/lesson.mp3"
 
     player "So it looks like [romeo_father.name] has died of something..."
 
