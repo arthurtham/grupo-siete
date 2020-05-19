@@ -3,7 +3,8 @@
 # Declare characters used by this game. The color argument colorizes the
 # name of the character.
 
-define romeo_father = Character("Julio Gonzalez")
+define joe = Character("Julio Gonzalez")
+define romeo_father = joe
 define romeo = Character("Romeo Gonzalez")
 define player = Character("Player", what_italic=True)
 default menuset = set()
@@ -120,9 +121,9 @@ label romeo_father_crimescene:
                 #    player "Oh yeah! [romeo.name] told me that he likes to drink margaritas!"
                 #    player "But is that what he was drinking in this mug?"
                 #else:
-                    player "Is he drinking a margarita or something?"
-                    player "Does he have a drinking addiction?"
-                    player "He must have been stressed out..."
+                player "Is he drinking a margarita or something?"
+                player "Does he have a drinking addiction?"
+                player "He must have been stressed out..."
                 $ mug = True
                 jump romeo_father_crimescene_surroundings_menu
             "Pen":
