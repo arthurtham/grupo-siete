@@ -768,6 +768,8 @@ screen preferences():
 
                     bar value Preference("auto-forward time")
 
+
+
                 vbox:
 
                     if config.has_music:
@@ -796,12 +798,14 @@ screen preferences():
                             if config.sample_voice:
                                 textbutton _("Test") action Play("voice", config.sample_voice)
 
+                    label _("Volume Settings")
+                    
+                    textbutton _("Mute All Sounds"):
+                        action Preference("all mute", "toggle")
+                        style "mute_all_button"
+
                     if config.has_music or config.has_sound or config.has_voice:
                         null height gui.pref_spacing
-
-                        textbutton _("Mute All"):
-                            action Preference("all mute", "toggle")
-                            style "mute_all_button"
 
 
 style pref_label is gui_label
