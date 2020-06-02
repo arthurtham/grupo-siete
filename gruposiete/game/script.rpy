@@ -23,7 +23,7 @@ define y = Character("Lorenzo", color = "#8a8a8a")
 define g = Character(what_italic=True)
 define jf = Character("Julieta", color = "#ffc0cb")
 define blnca = Character("Blanca", color = "#ffffff")
-define dm = Character("Dolores")
+define dm = Character("Dolores", color = "#D80000")
 define ig = Character("Iglesias", color = "#4287f5")
 
 # Declare menuset
@@ -112,6 +112,7 @@ label start:
     default read_dolores_letter = False
     default read_dolores_books = False
     default dm_romeo_medicine = False
+    default dolores_mad = False
 
     # Iglesias boolean flags
     default rude_visit = False
@@ -179,7 +180,7 @@ label global_room:
         "Jorge Gonzalez":
             jump romeo_father_start
         "Dolores de Muro":
-            pass
+            jump dolores_start_start
         "Iglesias":
             jump iglesias_start
         "Done investigating":
@@ -1002,105 +1003,115 @@ label romeo_father_end:
 #########
 #"""DOLORES DE MURO"""
 #########
-if not dolores_introduced:
+label dolores_start_start:
+scene muroroomfinal
+
+if dolores_introduced:
   jump dm_menu
 
-label dolores_start:
-    $ visited_dolores_room = true
-    "By the window you see a small and simply dressed woman. She stares  into the courtyard which stays lit by the light of the pale moon."
-    "Her eyes, wide but empty, sit on a face held on folded hands. She doesn’t move, but finds you in her notice."
-    dm "I am Dolores de Muro. Teacher for the son of The Late Master Gonzales. I assume you are the government negotiator."
-    dm "How goes your search sir?"
+else:
+    label dolores_start:
+        show murocharfinal
+        $ visited_dolores_room = True
+        "By the window you see a small and simply dressed woman. She stares  into the courtyard which stays lit by the light of the pale moon."
+        "Her eyes, wide but empty, sit on a face held on folded hands. She doesn’t move, but finds you in her notice."
+        dm "I am Dolores de Muro. Teacher for the son of The Late Master Gonzales. I assume you are the government negotiator."
+        dm "How goes your search sir?"
 
-    menu dm_menu_intro1:
-        "Just wonderful":
-            "She smiles briefly."
-            dm "Then why look for me?"
-            menu dm_intro1a:
-                "To be thorough":
-                    dm "And you are right to be."
-                    jump dm_intro1
+        menu dm_menu_intro1:
+            "Just wonderful":
+                "She smiles briefly."
+                dm "Then why look for me?"
+                menu dm_intro1a:
+                    "To be thorough":
+                        dm "And you are right to be."
+                        jump dm_intro1
 
-                "Good point *leave*":
-                    "She looks at you confused as you exit the room."
-                    $ dolores_introduced = True
-                    jump global_room_menu
-
-                "Well enough.":
-                    dm "That’s good."
-                    "She says this in an indifferent manner, only accompanied by the movement of her eyes."
-                    jump dm_intro1
-
-                "It’s impossible.":
-                    dm "Unfortunate that is."
-                    "She says this in an indifferent manner, only accompanied by the movement of her eyes."
-                    jump dm_intro1
-
-                "I think I just found my culprit!":
-                    dm "If an official of President Diaz wishes to have me rot in federal confinement, I cannot help myself."
-                    dm "I am afraid that we have nothing left to talk about, then"
-                    $ doloreS_mad = True
-                    jump dm_menu
-
-    label dm_intro1:
-        dm "I hope that you will be able to find this killer. It’s important that justice be brought to them."
-
-        menu dm_menu_intro2:
-            "I'm sorry if this affair has been distressing":
-                dm "Thank you for understanding."
-                jump dm_intro2
-
-            "You don't seem too enthusiastic.":
-                dm "And such is the way I feel. I can find nothing of excitement here."
-                jump dm_intro2
-
-            "It seems you hardly resent these circumstances anyways...":
-                dm "Quite the assumption. I suppose you’ll be able to figure out the rest without my cooperation then?"
-                menu dm_intro2a:
-                    "Quite":
-                        dm "I am afraid that we have nothing left to talk about, then"
-                        $ doloreS_mad = True
+                    "Good point *leave*":
+                        "She looks at you confused as you exit the room."
                         $ dolores_introduced = True
-                        jump dm_menu
+                        hide murocharfinal
+                        hide muroroomfinal
+                        jump global_room
 
-                    "No, I just felt it was a bit apparent.":
-                        dm "How so?"
-                        menu dm_intro2aa:
-                            "The Gonzales family seems scarce of compassion...":
-                                "She sighs and looks around the room, tapping her finger as if performing some calculation."
-                                dm "A poison is what I would be looking for. I find it possible the young Master Gonzales might know more."
-                                dm "The boy has recently been bothering me about medicines."
-                                $ dm_romeo_medicine = True
-                                menu dm_intro2aaa:
-                                    "For what reason?":
-                                        dm "I would not think for killing his own father, if that why you ask."
-                                        dm "He often has flights of fancy, and has been doing much of his own research lately in medicines. Ask him."
-                                        jump dm_intro2
+            "Well enough.":
+                dm "That’s good."
+                "She says this in an indifferent manner, only accompanied by the movement of her eyes."
+                jump dm_intro1
 
-                                    "Are you trying to pass the blame on?":
-                                        dm "If that’s what you want to believe you will believe it."
-                                        dm "I instructed him for many years, I would not try and implicate him in anything even if it was my doing."
-                                        dm "I am afraid that we have nothing left to talk about, then"
-                                        $ dolores_mad = True
-                                        $ dolores_introduced = True
-                                        jump dm_menu
+            "It’s impossible.":
+                dm "Unfortunate that is."
+                "She says this in an indifferent manner, only accompanied by the movement of her eyes."
+                jump dm_intro1
 
-                            "Why would some servant care?":
-                                dm "If you are investigating, perhaps you’ll find out without me."
-                                dm "I am afraid that we have nothing left to talk about, then"
-                                $ dolores_mad = True
-                                $ dolores_introduced = True
-                                jump dm_menu
+            "I think I just found my culprit!":
+                dm "If an official of President Diaz wishes to have me rot in federal confinement, I cannot help myself."
+                dm "I am afraid that we have nothing left to talk about, then"
+                $ doloreS_mad = True
+                jump dm_menu
 
-    label dm_intro2:
-        dm "At any rate, please feel free to talk to me and take a look around."
-        $ dolores_introduced = True
-        jump dm_menu
+        label dm_intro1:
+            dm "I hope that you will be able to find this killer. It’s important that justice be brought to them."
+
+            menu dm_menu_intro2:
+                "I'm sorry if this affair has been distressing":
+                    dm "Thank you for understanding."
+                    jump dm_intro2
+
+                "You don't seem too enthusiastic.":
+                    dm "And such is the way I feel. I can find nothing of excitement here."
+                    jump dm_intro2
+
+                "It seems you hardly resent these circumstances anyways...":
+                    dm "Quite the assumption. I suppose you’ll be able to figure out the rest without my cooperation then?"
+                    menu dm_intro2a:
+                        "Quite":
+                            dm "I am afraid that we have nothing left to talk about, then"
+                            $ doloreS_mad = True
+                            $ dolores_introduced = True
+                            jump dm_menu
+
+                        "No, I just felt it was a bit apparent.":
+                            dm "How so?"
+                            menu dm_intro2aa:
+                                "The Gonzales family seems scarce of compassion...":
+                                    "She sighs and looks around the room, tapping her finger as if performing some calculation."
+                                    dm "A poison is what I would be looking for. I find it possible the young Master Gonzales might know more."
+                                    dm "The boy has recently been bothering me about medicines."
+                                    $ dm_romeo_medicine = True
+                                    menu dm_intro2aaa:
+                                        "For what reason?":
+                                            dm "I would not think for killing his own father, if that why you ask."
+                                            dm "He often has flights of fancy, and has been doing much of his own research lately in medicines. Ask him."
+                                            jump dm_intro2
+
+                                        "Are you trying to pass the blame on?":
+                                            dm "If that’s what you want to believe you will believe it."
+                                            dm "I instructed him for many years, I would not try and implicate him in anything even if it was my doing."
+                                            dm "I am afraid that we have nothing left to talk about, then"
+                                            $ dolores_mad = True
+                                            $ dolores_introduced = True
+                                            jump dm_menu
+
+                                "Why would some servant care?":
+                                    dm "If you are investigating, perhaps you’ll find out without me."
+                                    dm "I am afraid that we have nothing left to talk about, then"
+                                    $ dolores_mad = True
+                                    $ dolores_introduced = True
+                                    jump dm_menu
+
+        label dm_intro2:
+            dm "At any rate, please feel free to talk to me and take a look around."
+            $ dolores_introduced = True
+            hide murocharfinal
+            jump dm_menu
 
 menu dm_menu:
     "Talk to Dolores":
-        if doloreS_mad:
+        show murocharfinal
+        if dolores_mad:
             "Dolores shakes her head as you approach, and ignores you by looking at the window."
+            hide murocharfinal
             jump dm_menu
 
         else:
@@ -1111,15 +1122,21 @@ menu dm_menu:
         jump dm_menu_search
 
     "Leave":
-        dm "Until next time."
-        jump global_room_menu
+        if not dolores_mad:
+            show murocharfinal
+            dm "Until next time."
+            hide murocharfinal
+
+        hide murocharfinal
+        hide muroroomfinal
+        jump global_room
 
 menu dm_menu_talk:
     "About you...":
         menu dm_menu_talk1:
             dm "There is not  much to say about me I am afraid."
 
-            "What's you're story?":
+            "Your story":
                 dm "I am a personal instructor under the service of The- now late- Master Gonzales."
                 dm "I grew up in a town now under the ownership of his hacienda."
                 dm "I was relocated to the Hacienda house some years ago to oversee the instruction of The Young Master Gonzales: Romero."
@@ -1135,174 +1152,194 @@ menu dm_menu_talk:
                         dm "We were good friends, God rest his soul."
                         jump dm_menu_talk1
 
-    "Tell me what you think happened during the murder":
-        dm "From what I saw, The Master Gonzales simply… died."
-        dm "Ofcourse, like you, I suspect it too to be a murder of some kind. He was in good health."
-        dm "I had been preparing studies here for the Young Master's lessons during our stay. I would not know much more."
-        jump dm_menu_talk1
-
-    "What is this room?":
-        dm "An English-style study. I have been burning midnight oil here for some days now. It is a fascinating collection."
-        dm "Seeing as many dignitaries use this town mansion for government buisiness, it makes sense that its libraries are so robust."
-        menu dm_menu_talk1b:
-            "Is that so?":
-                dm "Ofcourse, histories, theologies, mixed languages."
-                dm "This mansion houses many delegations from many corners of the world and country."
+            "Tell me what you think happened during the murder":
+                dm "From what I saw, The Master Gonzales simply… died."
+                dm "Ofcourse, like you, I suspect it too to be a murder of some kind. He was in good health."
+                dm "I had been preparing studies here for the Young Master's lessons during our stay. I would not know much more."
                 jump dm_menu_talk1
 
-            "Right then...":
-                dm "I suppose it is a sore time to be enthusiastic about literature..."
-                jump dm_menu_talk1
+            "What is this room?":
+                dm "An English-style study. I have been burning midnight oil here for some days now. It is a fascinating collection."
+                dm "Seeing as many dignitaries use this town mansion for government buisiness, it makes sense that its libraries are so robust."
+                menu dm_menu_talk1b:
+                    "Is that so?":
+                        dm "Ofcourse, histories, theologies, mixed languages."
+                        dm "This mansion houses many delegations from many corners of the world and country."
+                        jump dm_menu_talk1
+
+                    "Right then...":
+                        dm "I suppose it is a sore time to be enthusiastic about literature..."
+                        jump dm_menu_talk1
+
+            "Something else":
+                dm "Ofcourse."
+                jump dm_menu_talk
 
 
-            "About the Two Families":
-                menu dm_menu_talk2:
-                    dm "They have quite a history. It’s fair to say I know a bit."
 
-                    "The Feud":
-                        dm "They are land owners trying to clamor over each other as if they’re crabs in a bucket. Mexico the basen, President Diaz the fisherman."
-                        dm "Truly you cannot find surprise with this fact?"
-                        dm "A man of your station in this reign of Our President must deal with such disputes in regular intervals."
-                        menu dm_menu_talk2a:
-                            "I suppose so...":
-                                jump dm_menu_talk2
+    "About the Two Families":
+        menu dm_menu_talk2:
+            dm "They have quite a history. It’s fair to say I know a bit."
 
-                            "Surely there's more to say?":
-                                dm "Per their affairs, I am afraid not.  If you feel so inclined I could recount the individual tales of their struggle, but I fear you’d find them useless."
-                                menu dm_menu_talk2aa:
-                                    "A fair point":
-                                        jump dm_menu_talk2
-
-                                    "Everything is useful to me right now, miss.":
-                                        dm "*sig* There was this one affair some years ago of a french diplomat both families wished to court into their favor. He was on business in the capital."
-                                        dm "The Master Gonzales visited with a cohort of cientificos to personally escort and pamper him through a parade of museums and other intellectual curiosities throughout the city"
-                                        dm "The Master Fernandez attempted to woo him with a banquet and a troop of actors performing grecian classics in French."
-                                        dm "In the end, neither won the man’s favor: a third family had discovered the diplomat’s love of feminine company and personally saw to his supply thereof without cost."
-                                        dm "These are the escapades you will discover."
-                                        menu dm_menu_talk2aaa:
-                                            "Ah":
-                                                jump dm_menu_talk2
-
-                                            "You must be hiding something more important!":
-                                                dm "Truly I am not sir, my service has been a dull one to say the least."
-                                                jump dm_menu_talk2
-
-                    "The Gonzales Family":
-                        dm "They come from a line of practitioners and other educated people."
-                        dm "When President Diaz assumed power, The Master Gonzales found himself in one of his inner circles."
-                        dm "Then it was that he was awarded land and titles for his contributions."
-                        dm "Since then, they have only looked for more acclaim and wealth."
-                        if speak_freely:
-                            dm "Such a waste of his mind. But it doesn’t matter now."
-                            menu dm_menu_talk2b:
-                                "I agree.":
-                                    jump dm_menu_talk2
-
-                                "Status is hardly a waste.":
-                                    dm "Perhaps I’d be persuaded if I had such status."
-                                    jump dm_menu_talk2
-
-                                "Quite the  sour sentiment towards the dead..":
-                                    dm "Apologies, I got carried away..."
-                                    $ speak_freely = False
-                                    jump dm_menu_talk2
-                        else:
-                            jump dm_menu_talk2
-
-                    "The Fernadez Family":
-                        dm "Old-money aristocrats, their line traces back to before the liberation."
-                        dm "I do not have much to add to that."
+            "The Feud":
+                dm "They are land owners trying to clamor over each other as if they’re crabs in a bucket. Mexico the basen, President Diaz the fisherman."
+                dm "Truly you cannot find surprise with this fact?"
+                dm "A man of your station in this reign of Our President must deal with such disputes in regular intervals."
+                menu dm_menu_talk2a:
+                    "I suppose so...":
                         jump dm_menu_talk2
 
-            "About something I know":
-                menu dm_menu_talk3:
-                    "This letter of you wishing for the death of The Master Gonzales…" if read_dolores_letter:
-                        dm "Is a sentiment I sometimes had, yes. We often entertain morbid flights of fancy no? God forbid I confide such to a friend."
-                        dm "If it dissuades you, I wrote about wishing him to be dead, not wishing somebody killed him."
-                        menu dm_menu_talk3b:
-                            "I suppose that's fair.":
-                                dm "I do understand how it could be concerning sir."
-                                dm "I did not  always feel that way though, I just had  paigns of frustration here and there."
-                                jump dm_menu_talk3
+                    "Surely there's more to say?":
+                        dm "Per their affairs, I am afraid not.  If you feel so inclined I could recount the individual tales of their struggle, but I fear you’d find them useless."
+                        menu dm_menu_talk2aa:
+                            "A fair point":
+                                jump dm_menu_talk2
 
-                            "A bit morbid indeed. But fine...":
-                                dm "You would find the behaviour of Master Gonzales even more morbid"
-                                jump dm_menu_talk3
+                            "Everything is useful to me right now, miss.":
+                                dm "*sigh* There was this one affair some years ago of a french diplomat both families wished to court into their favor. He was on business in the capital."
+                                dm "The Master Gonzales visited with a cohort of cientificos to personally escort and pamper him through a parade of museums and other intellectual curiosities throughout the city."
+                                dm "The Master Fernandez attempted to woo him with a banquet and a troop of actors performing grecian classics in French."
+                                dm "In the end, neither won the man’s favor: a third family had discovered the diplomat’s love of feminine company and personally saw to his supply thereof without cost."
+                                dm "These are the escapades you will discover."
+                                menu dm_menu_talk2aaa:
+                                    "Ah":
+                                        jump dm_menu_talk2
 
-                            "I think the courts would have a more damning opinion!":
-                                dm "Then ask them for it and drag me off."
-                                dm "I am afraid that we have nothing left to talk about."
-                                $ dolores_mad = True
-                                jump dm_menu
+                                    "You must be hiding something more important!":
+                                        dm "Truly I am not sir, my service has been a dull one to say the least."
+                                        jump dm_menu_talk2
 
+            "The Gonzales Family":
+                dm "They come from a line of practitioners and other educated people."
+                dm "When President Diaz assumed power, The Master Gonzales found himself in one of his inner circles."
+                dm "Then it was that he was awarded land and titles for his contributions."
+                dm "Since then, they have only looked for more acclaim and wealth."
+                if speak_freely:
+                    dm "Such a waste of his mind. But it doesn’t matter now."
+                    menu dm_menu_talk2b:
+                        "I agree.":
+                            dm "It IS a pity. So many wondeful minds, totally corrupted."
+                            jump dm_menu_talk2
 
+                        "Status is hardly a waste.":
+                            dm "Perhaps I’d be persuaded if I had such status."
+                            jump dm_menu_talk2
 
+                        "Quite the  sour sentiment towards the dead..":
+                            dm "More so when he was living..."
+                            jump dm_menu_talk2
+                else:
+                    jump dm_menu_talk2
 
-                    "About your politcial literature..." if read_dolores_books:
-                        dm "I imagine an officer of Diaz might consider me some kind of subversive."
-                        dm "Perhaps I believe in a better Mexico, a more equitable one. Is that such a crime?"
-                        dm "I would also say that makes me more morally accountable than Diaz..."
-                        menu dm_menu_talk3c:
-                            "Go on?":
-                                dm "The book in French is from a scholar in Russia. It’s given some of us clarity on how to organize our communities in the southern states."
-                                dm "Many of them have to act with independence from the Mexican government already."
-                                dm "If they were organized and shared resources more as a loose unit, it could improve life by degrees."
-                                dm "Without doubt though it would also be seen as subversive."
-                                jump dm_menu_talk3
+            "The Fernadez Family":
+                dm "Old-money aristocrats, their line traces back to before the liberation."
+                dm "I do not have much to add to that."
+                jump dm_menu_talk2
 
-                            "Fine then.":
-                                dm "I am glad you are at least tolerant."
-                                jump dm_menu_talk3
+            "Something else":
+                dm "Ofcourse."
+                jump dm_menu_talk
 
-                            "Perhaps the courts would like to hear that instead?":
-                                dm "Then go and put me to trail. We both know how I would fair in court."
-                                dm "I am afraid that we have nothing left to talk about."
-                                $ dolores_mad = True
-                                jump dm_menu
-
-
-
-                    "About your books on medicines..." if read_dolores_books:
-                        dm "Are rather important to this case I might imagine..."
-                        dm "The Young Master Gonzales has been interested in these topics as of late."
-                        dm "I brought them to help with his studies."
-                        dm "He is prone to rather specific flights of fancy. I am sure this is just another."
-                        menu dm_menu_talk3a:
-                            "That could be...":
-                                dm "If it’s any consolation, just two months ago he was engrossed with the history of Caribbean privateers."
-                                dm "‘It’s like a whole sea of thieves! Imagine!’"
-                                dm "He can be very imaginative."
-                                $ dm_romeo_medicine = True
-                                jump dm_menu_talk3
-
-                            "How sure is 'sure'?":
-                                dm "Very sure. He’s not a very- strong-willed boy..."
-                                dm "Besides, poisoning his own father… who could do such a thing?"
-                                dm "Plenty of people study medicine, sir. It is not uncommon"
-                                jump dm_menu_talk3
-
-                            "Or YOU had brought them to inform a muder plot.":
-                                dm "I have had misgivings with The Master Gonzales but nothing to drive me to this."
-                                dm "But if you feel so inclined to believe this, there is nothing I can say to persuade you."
-                                dm "I am afraid that we have nothing left to talk about, then"
-                                $ dolores_mad = True
-                                $ dolores_introduced = True
-                                jump dm_menu
-
-                    "Did you know Romero was in touch with Julieta?" if letter_from_julieta:
-                        dm "Yes. He believes I am in the dark though. "
-                        dm "I have not bothered myself with learning any details, but I have to say it is one of the more interesting pieces of gossip in my repertoire."
+    "About something I know":
+        menu dm_menu_talk3:
+            "This letter of you wishing for the death of The Master Gonzales…" if read_dolores_letter:
+                dm "Is a sentiment I sometimes had, yes. We often entertain morbid flights of fancy no? God forbid I confide such to a friend."
+                dm "If it dissuades you, I wrote about wishing him to be dead, not wishing somebody killed him."
+                menu dm_menu_talk3b:
+                    "I suppose that's fair.":
+                        dm "I do understand how it could be concerning sir."
+                        dm "I did not  always feel that way though, I just had  paigns of frustration here and there."
                         jump dm_menu_talk3
 
-                    "Do you know what these herbs are?" if herbs:
-                        dm "Hmmm, those are rare plants used in native medicines."
-                        dm "Difficult to find outside of the southern states as well. Whoever brought those did not simply find them."
+                    "A bit morbid indeed. But fine...":
+                        dm "You would find the behaviour of Master Gonzales even more morbid"
                         jump dm_menu_talk3
 
-    "May I search your personal effects? I'm afraid this investigation must be thorough...":
+                    "I think the courts would have a more damning opinion!":
+                        dm "Then ask them for it and drag me off."
+                        dm "I am afraid that we have nothing left to talk about."
+                        $ dolores_mad = True
+                        hide murocharfinal
+                        jump dm_menu
+
+
+
+
+            "About your politcial literature..." if read_dolores_books:
+                dm "I imagine an officer of Diaz might consider me some kind of subversive."
+                dm "Perhaps I believe in a better Mexico, a more equitable one. Is that such a crime?"
+                dm "I would also say that makes me more morally accountable than Diaz..."
+                menu dm_menu_talk3c:
+                    "Go on?":
+                        dm "The book in French is from a scholar in Russia. It’s given some of us clarity on how to organize our communities in the southern states."
+                        dm "Many of them have to act with independence from the Mexican government already."
+                        dm "If they were organized and shared resources more as a loose unit, it could improve life by degrees."
+                        dm "Without doubt though it would also be seen as subversive."
+                        jump dm_menu_talk3
+
+                    "Fine then.":
+                        dm "I am glad you are at least tolerant."
+                        jump dm_menu_talk3
+
+                    "Perhaps the courts would like to hear that instead?":
+                        dm "Then go and put me to trail. We both know how I would fair in court."
+                        dm "I am afraid that we have nothing left to talk about."
+                        $ dolores_mad = True
+                        hide murocharfinal
+                        jump dm_menu
+
+
+
+            "About your books on medicines..." if read_dolores_books:
+                dm "Are rather important to this case I might imagine..."
+                dm "The Young Master Gonzales has been interested in these topics as of late."
+                dm "I brought them to help with his studies."
+                dm "He is prone to rather specific flights of fancy. I am sure this is just another."
+                menu dm_menu_talk3a:
+                    "That could be...":
+                        dm "If it’s any consolation, just two months ago he was engrossed with the history of Caribbean privateers."
+                        dm "‘It’s like a whole sea of thieves! Imagine!’"
+                        dm "He can be very imaginative."
+                        $ dm_romeo_medicine = True
+                        jump dm_menu_talk3
+
+                    "How sure is 'sure'?":
+                        dm "Very sure. He’s not a very- strong-willed boy..."
+                        dm "Besides, poisoning his own father… who could do such a thing?"
+                        dm "Plenty of people study medicine, sir. It is not uncommon"
+                        jump dm_menu_talk3
+
+                    "Or YOU had brought them to inform a muder plot.":
+                        dm "I have had misgivings with The Master Gonzales but nothing to drive me to this."
+                        dm "But if you feel so inclined to believe this, there is nothing I can say to persuade you."
+                        dm "I am afraid that we have nothing left to talk about, then"
+                        $ dolores_mad = True
+                        $ dolores_introduced = True
+                        hide murocharfinal
+                        jump dm_menu
+
+            "Did you know Romero was in touch with Julieta?" if letter_from_julieta:
+                dm "Yes. He believes I am in the dark though. "
+                dm "I have not bothered myself with learning any details, but I have to say it is one of the more interesting pieces of gossip in my repertoire."
+                jump dm_menu_talk3
+
+            "Do you know what these herbs are?" if herbs:
+                dm "Hmmm, those are rare plants used in native medicines."
+                dm "Difficult to find outside of the southern states as well. Whoever brought those did not simply find them."
+                jump dm_menu_talk3
+
+
+            "Thank you for the answers.":
+                dm "Ofcourse."
+                jump dm_menu_talk
+
+    "May I search your personal effects? I'm afraid this investigation must be thorough..." if not bag_permission:
         dm "Only because you asked. My effects are on the desk on the other side of the room."
+        $ bag_permission = True
+        jump dm_menu_talk
 
     "That will be all for now. Thank you.":
+        hide murocharfinal
         jump dm_menu
 
 menu dm_menu_search:
@@ -1324,8 +1361,10 @@ menu dm_menu_search:
         "Even from behind its opened lid, you can clearly see books spilling out of it."
         if not bag_permission:
             "You approach it. Dolores pipes up from the window with a gaze of denouncing objection:"
+            show murocharfinal
             dm "I do not remember giving you permission Mister Government Official."
             dm "Please leave my things where they are"
+            hide murocharfinal
             menu dm_menu_search1:
                 "Continue anyways":
                     "She shakes her head in irritation and turns around."
@@ -1358,7 +1397,10 @@ menu dm_menu_search:
                     $ read_dolores_books = True
                     jump dm_menu_search_books
 
-    "Stop Searching":
+                "Stop Searching Things":
+                    jump dm_menu_search
+
+    "Stop Searching Room":
         jump dm_menu
 
 #########
@@ -1477,7 +1519,7 @@ label iglesias_room:
             # show ig_paper_2 at truecenter
             # with dissolve
             # play footstep
-            play sound "<from 0 to 3.0>audio/ig_fstep.mp3"
+            play sound "<from 5 to 15.5>audio/ig_fstep.mp3"
             # hide ig_paper_2
             player "Damn, He's back."
             #stop music
@@ -1875,9 +1917,11 @@ label end_chapter:
             jump decide_land
         "Dolores de Muro":
             $ selected_murdurer = 6
+            show murocharfinal
             dm "I truly have no idea what you hope to achieve with this..."
             # WELL THEN
             # Decide land
+            hide murocharfinal
             jump decide_land
         "Iglesias":
             $ selected_murdurer = 7
