@@ -120,10 +120,12 @@ label start:
 
 # Start intro script -- should have some backgroud picture here. Maybe picture of mexico.
     scene mexico city
+    with dissolve
     player "Sometime during the last decade of the 19th century, I found myself working on a legal dispute in the capital of our country: Mexico."
     player "I had been a federal negotiator for some years now, but was not prepared for what was to happen that dark night..."
 # characters--Some characters' image goes here
     scene family heads
+    with dissolve
     player "Two families of status had recently entered a land dispute over the inheritance of a shared relative.
             The details of the case now elude me, but the families themselves I could not forget."
     player "The Fernandez family: that one rich family that’s trying to grab as much land as they can at all costs."
@@ -133,11 +135,13 @@ label start:
     player "Well, it’s whatever. I thought this would be a quick resolution."
 #What the characters are doing/why:
     scene mexico city
+    with dissolve
     player"I met at a  town mansion owned by a third party to help mediate these negotiations."
     player "The proceedings were going as expected, both heads of family as stubborn as ever."
     player "However, just as we were about to break for dinner, it happened…. "
 # Death scene--Authur's beautiful pic goes here
     scene romeo father crimescene
+    with dissolve
     player "Jorge Gonzalez had suddenly collapsed in the meeting room!"
     player "I couldn’t feel a pulse on Jorge and he was non-responsive! "
     player "The group left in shock, and I announced that this was an official crime scene.  No one was allowed to leave or else they would be apprehended. "
@@ -146,8 +150,9 @@ label start:
     "*You are able to accuse any family member at any time, so choose wisely.*"
     "*Don't forget to use your saves so that you can return to a previous part of your investigation!*"
     "*Good luck!*"
-    # End intro script
-
+  # End intro script
+    define background_music = renpy.music.register_channel("background_music", loop=True)
+    play background_music "audio/mystery.mp3"
     jump global_room
 
 #########
@@ -157,6 +162,7 @@ label start:
 label global_room:
 
     scene hallway
+    with dissolve
 
     menu global_room_menu:
         "Who should I investigate?"
@@ -190,6 +196,7 @@ label global_room:
 label julieta_start:
 
     scene julietas_room
+    with dissolve
 
     if not visited_julieta_room:
         player  "(Jeez. I get that these people are rich but this room is absolutely lavish.)"
@@ -460,6 +467,7 @@ label lorenzo_start:
     # images directory to show it.
 
     scene BGroom
+    with dissolve
     # This shows a character sprite. A placeholder is used, but you can
     # replace it by adding a file named "eileen happy.png" to the images
     # directory.
@@ -573,6 +581,7 @@ label lorenzo_start:
 #########
 label parlor_start:
     scene parlor
+    with dissolve
 
 
 
@@ -823,6 +832,7 @@ label romero_start:
 #########
 label romeo_father_start:
     scene bg room
+    with dissolve
 
     #show makoto serious
 
@@ -834,6 +844,7 @@ label romeo_father_start:
 
 label romeo_father_menu:
     scene bg room
+    with dissolve
 
     menu:
         "What should I observe?"
@@ -846,6 +857,7 @@ label romeo_father_menu:
 
 label romeo_father_crimescene:
     scene romeo father crimescene
+    with dissolve
     $ visited_crimescene = True
     player "So this is where [romeo_father.name] died mysteriously..."
     player "I think I should investigate the body and his surroundings."
@@ -882,8 +894,7 @@ label romeo_father_crimescene:
                 player "Could it be from all the stress?"
                 jump romeo_father_crimescene_body_menu
             "Mouth":
-                $ mouth = True
-                player "His lips seem to be purple..."
+                player "His lips seem to be burnt purple..."
                 if dress:
                     player "I feel like I've seen purple stains on Julieta's dress too."
                 player "Is this the sign of royalty?"
@@ -900,6 +911,7 @@ label romeo_father_crimescene:
 
     label romeo_father_crimescene_surroundings:
         scene romeo father crimescene
+        with dissolve
         player "So here is the crime scene..."
 
         menu romeo_father_crimescene_surroundings_menu:
@@ -937,6 +949,7 @@ label romeo_father_crimescene:
 
 label romeo_father_roomscene:
     scene romeo father room
+    with dissolve
     $ visited_jorge_room = True
     player "So this is [romeo_father.name]'s break room for the meeting..."
 
@@ -986,17 +999,13 @@ label romeo_father_end:
     jump global_room
 
 #########
-#"""DOLORES DE MURO"""
-#########
-
-
-#########
 #"""IGLESIAS"""
 #########
 
 label iglesias_start:
     # show ig's room
     scene ig_bg
+    with dissolve
 
 label visit_ig_check:
     if visited_iglesias_room == False:
@@ -1007,6 +1016,7 @@ label visit_ig_check:
 label first_visit:
     $ visited_iglesias_room = True
     scene ig_bg
+    with dissolve
     # show player
     # show player at left
     # with dissolve
@@ -1057,6 +1067,7 @@ label first_visit:
 
 label iglesias_room:
     scene ig_bg
+    with dissolve
     menu ig_room_menu:
         set menuset
         "Which I should start from?"
@@ -1148,6 +1159,7 @@ label iglesias_room:
 
 label iglesias_meet:
     scene ig_bg
+    with dissolve
 
     show ig_p at right
     with dissolve
@@ -1444,6 +1456,7 @@ label end_chapter:
                 player "And with Lorenzo out of the way, Romero and Julieta can finally have the relationship that they desired."
 
                 scene mexico city
+                with dissolve
 
                 player "Sometime after, I read in the newspaper that Romero and Julieta had officially married."
                 player "And with that, both the Fernandez and Gonzalez families consolidated their land to become a powerful force!"
@@ -1533,6 +1546,7 @@ label decide_land:
         player "And with that, I arrested the culprit with full confidence!"
 
     scene mexico city
+    with dissolve
 
     player "But now I have to decide who gets the land."
 
