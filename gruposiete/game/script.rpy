@@ -14,21 +14,36 @@ Original file is located at
 
 # Declare all characters
 
-define romeo_father = Character("Julio Gonzalez")
-define romeo = Character("Romeo Gonzalez")
+define romeo_father = Character("Jorge")
+define romeo = Character("Romero", color = "#42f54e")
+define romero = romeo
 define player = Character("Player", what_italic=True)
-define r = Character("Ricardo")
-define y = Character()
+define r = Character("Ricardo", color = "#da42f5")
+define y = Character("Lorenzo", color = "#8a8a8a")
 define g = Character(what_italic=True)
 define jf = Character("Julieta", color = "#ffc0cb")
 define blnca = Character("Blanca", color = "#ffffff")
 define dm = Character("Dolores")
-define ig = Character("Iglesias")
+define ig = Character("Iglesias", color = "#4287f5")
 
 # Declare menuset
 default menuset = set()
 
+# Lorenzo's images
+image BGroom = "library-1219676-1920x1440.jpg"
+image Lorenzo = "jacob.png"
+image envelope = "classified-1241157-1920x1440"
+image weapon = "revolver-1176758-1919x1284.jpg"
+image bibleimg = "very-old-family-bible-1-1494754"
+image drugimg = "ancient-book-pt-2-1512285-1920x1440"
 
+# Julieta's images
+image Julieta = "Julieta.PNG"
+image Blanca = "Blanca.png"
+image julietas_room = "julietasroom.png"
+image 8ball = "8ball.png"
+image dress = "dress.png"
+image notebook = "notebook.png"
 
 # The game starts here.
 
@@ -42,6 +57,11 @@ label start:
     $ documents_observed = False
     $ visited_crime_scene = False
     $ visited_jorge_room = False
+    $ mouth = False
+
+    # LORENZO FERNANDEZ'S boolean flags
+    define visited_lorenzo_room = False
+    define drug_recipe = False
 
     # RICARDO FERNANDEZ'S boolean flags
     define visited_parlor = False
@@ -50,9 +70,11 @@ label start:
     define ball_needed = False
     define billiard_ball = False
     define inquired = False
+    define inquired2 = False
 
     # ROMERO GONZALEZ'S boolean flags
     default visited_romero = False
+    default leather_bag = False
     default vial = False
     default science_journal = False
     default letter_from_julieta = False
@@ -60,14 +82,24 @@ label start:
     default herbs = False
     default government_book = False
     default relationship_with_father = False
+    default relationship_with_mother = False   # dead
+    default relationship_with_brother = False  # dead
     default neck_scar = False
-    default romero_julieta_painting = False
+    default julieta_painting = False
+    default human_effigy = False
+    default private_diary = False
+    # Could make this a false option for potential "murder" or death cause
+    # when player decides who to blame.
+    default father_suicide_note = False
+    default romero_kicked_out_once = False
+    default romero_kicked_out_twice = False
+    default asked_about_emotional_state = False
+    default asked_about_father_killer = False
 
     # JULIETA FERNANDEZ'S boolean flags
     default visited_julieta_room = False
     default notebook = False
     default dress = False
-    default cat_bed = False
     default talked_julieta = False
     default looked_julieta = False
 
@@ -79,9 +111,41 @@ label start:
     default dolores_introduced = False
     default read_dolores_letter = False
     default read_dolores_books = False
+    default dm_romeo_medicine = False
 
-# Start intro script
-    player "Placeholder intro text"
+    # Iglesias boolean flags
+    default rude_visit = False
+    default visited_iglesias_room = False
+    default romero_missing = False
+
+# Start intro script -- should have some backgroud picture here. Maybe picture of mexico.
+    scene mexico city
+    player "Sometime during the last decade of the 19th century, I found myself working on a legal dispute in the capital of our country: Mexico."
+    player "I had been a federal negotiator for some years now, but was not prepared for what was to happen that dark night..."
+# characters--Some characters' image goes here
+    scene family heads
+    player "Two families of status had recently entered a land dispute over the inheritance of a shared relative.
+            The details of the case now elude me, but the families themselves I could not forget."
+    player "The Fernandez family: that one rich family that’s trying to grab as much land as they can at all costs."
+    player "And the Gonzales family: those scientists that are trying to mix new mass solutions and medicine or something like that."
+# Explain feud
+    player "The Fernandez family is once again trying to take land, but why would they care about these scientists? "
+    player "Well, it’s whatever. I thought this would be a quick resolution."
+#What the characters are doing/why:
+    scene mexico city
+    player"I met at a  town mansion owned by a third party to help mediate these negotiations."
+    player "The proceedings were going as expected, both heads of family as stubborn as ever."
+    player "However, just as we were about to break for dinner, it happened…. "
+# Death scene--Authur's beautiful pic goes here
+    scene romeo father crimescene
+    player "Jorge Gonzalez had suddenly collapsed in the meeting room!"
+    player "I couldn’t feel a pulse on Jorge and he was non-responsive! "
+    player "The group left in shock, and I announced that this was an official crime scene.  No one was allowed to leave or else they would be apprehended. "
+    player " I told them to separate into different rooms of the mansion and that I would personally interrogate them one by one to solve who killed Jorge Gonzalez."
+    "*Your goal is to investigate the Town Mansion, decide who is the culprit, and to award the land to a family of your choice!*"
+    "*You are able to accuse any family member at any time, so choose wisely.*"
+    "*Don't forget to use your saves so that you can return to a previous part of your investigation!*"
+    "*Good luck!*"
     # End intro script
 
     jump global_room
@@ -91,6 +155,9 @@ label start:
 #########
 
 label global_room:
+
+    scene hallway
+
     menu global_room_menu:
         "Who should I investigate?"
 
@@ -102,7 +169,7 @@ label global_room:
             jump parlor_start
         "Romero Gonzalez":
             jump romero_start
-        "Julio Gonzalez":
+        "Jorge Gonzalez":
             jump romeo_father_start
         "Dolores de Muro":
             pass
@@ -122,14 +189,12 @@ label global_room:
 
 label julieta_start:
 
-    scene bg julietas_room
+    scene julietas_room
 
     if not visited_julieta_room:
         player  "(Jeez. I get that these people are rich but this room is absolutely lavish.)"
         player  "(And excessivly pink.)"
-
         show Julieta
-
         jf "HISSSSSSSSSSS!"
         player  "AHHHHHH!"
         jf "Hey creep! What are you doing in my room?"
@@ -139,23 +204,24 @@ label julieta_start:
         player  "I'm currently conducting an investigation on the death of Jorge Gonzalez."
         jf "..."
         jf "Fine, but you better not leave any of your old person smell anywhere."
-        jf "My dear Blanca aboslutely hates gross smells."
+        jf "My dear Blanca absolutely hates gross smells."
+        show Blanca
         blnca "Meeeooow!"
+        hide Blanca
         player  "(I didn't even notice the cat.)"
         player  "(They aren't common pets around here, she really is from a rich family)"
-        player  "(And I'm just goning to ignore her other comment)"
+        player  "(And I'm just going to ignore her other comment)"
         player  "Lets start with a few basic questions."
         player  "What is your name and occupation?"
         jf "My name is Julieta Fernandez, soon-to-be bride of the most perfect and handsome man on the planet!"
         player  "Huh!? Who are you talking about?"
         jf "Romero Fernandez, you idiot! The perfect man and heir to the Fernandez Family!"
         player  "(She's in love with the son of the the Fernandez family?)"
-        player  "(I thought these two families absolutely hated eath other.)"
+        player  "(I thought these two families hated eath other.)"
         player  "(Well whatever, it's about time I get this investigation under way.)"
 
     else:
         show Julieta
-
         jf "Ugh. Why did you come back? The awful smell had just cleard up."
         player  "(Trust me, I wouldn't be here if I didn't need to be.)"
         player  "(And why does she keep saying I smell?)"
@@ -167,7 +233,7 @@ label julieta_start:
                 if not talked_julieta:
                     jump talking_with_julieta
                 else:
-                    jump talking_choices
+                    jump julieta_talking_choices
 
             "Look around room.":
                 if not looked_julieta:
@@ -180,16 +246,14 @@ label julieta_start:
                 player  "(I guess that's all I could find here for now.)"
                 player  "(I should try looking somwhere else.)"
                 $ visited_julieta_room = True
-                jump global_room_menu
+                jump global_room
 
     # Talking with Julieta section
 
     label talking_with_julieta:
         player  "I'd like to ask you some more questions."
-
         jf "Fine, but it better be quick, I can smell you from here."
-
-        player  "(I should take her in just for that!)"
+        player  "(I should take her in just for that attitude!)"
         player  "(Sigh. Keep it together, there are more important things to worry about.)"
 
         menu julieta_talking_choices:
@@ -203,7 +267,7 @@ label julieta_start:
             "Ask about her father." if visited_lorenzo_room or dress:
                 jump jafather
 
-            "Ask about her brother." if visited_parlor:
+            "Ask about her brother." if visited_parlor or billiard_ball:
                 jump jabrother
 
             "Ask about the victim.":
@@ -222,35 +286,69 @@ label julieta_start:
             player  "Can you tell me more about him?"
             jf "Romero is my knight in shining armor. I want to be with him for the rest of my life!"
             jf "His chiseled face is sculpted by the gods!!~"
-            player  "(Sigh. Well she certainly loves him. Maybe a bit too much.)"
+            player  "(Sigh. Well she certainly loves him.)"
+            player "(Maybe a bit too much.)"
             jump julieta_talking_choices
 
         label jafather:
-            player  "(I ask aboout Lorenzo Fernandez.)"
+            player  "Can you tell me a bit about your father, Lorenzo Fernandez?"
+            jf "Father..."
+            jf "He used to be so loving and happy..."
+            jf "But he changed after Mom died. Now all he cares about is owning more land."
+            jf "At least he supports me and Romero getting married."
+            player "(It seems her father wasn't always so cold and scary.)"
             jump julieta_talking_choices
 
         label jabrother:
-            player  "(I ask about Ricardo Fernandez.)"
+            player  "Can you tell me about your brother, Ricardo Fernandez?"
+            jf "That lazy bum?"
+            jf "All he does is hang around the parlor all day smoking and playing pool."
+            jf "Father considers him a failure, not worthy of leading the family."
+            jf "And sometimes he takes Blanca to that gross parlor without my permission and she ends up smelling like tobacco!"
+            show Blanca
+            blnca "Meow..."
+            hide Blanca
+            player "(That last  bit was a little unecessary, but it seems that her father and brother don't get along.)"
             jump julieta_talking_choices
 
         label javictim:
-            player  "(I ask about Jorge Gonzalez.)"
+            player  "What do you know about the victim, Jorge Gonzalez?"
+            jf "Jorge..."
+            jf "He was a good man, who was always so nice to me despite never seeing eye-to-eye with my father."
+            jf "He was also on bad terms with Romero, he has extremely high standards that even a perfect man like Romero has trouble meeting."
+            jf "But despite all that he said he would gladly allow for Romero and I to get married, once our families could come to an agreement on this land."
+            jf "Now there is nothing preventing us from getting married, but why? Why did he die so suddenly..."
+            player "(Even if she is a spoiled brat, she seems genuinely shaken by this whole thing, poor girl...)"
+            jf "..."
+            jf "Why are you staring at me like that you smelly weirdo?"
+            player "(Sigh, right when I was starting to feel sorry for her.)"
             jump julieta_talking_choices
 
         label jablanca:
-            player  "(I ask about her cat. Why am I doing this?)"
+            player  "(I'll probably end up regretting this, but I may as well try.)"
+            player "Can you tell me about your cat Blanca?"
+            jf "Why do you want to know about my cat you weirdo?"
+            player "Well, cats aren't common pets in Mexico, this is actually my first time seeing one up close."
+            jf "If you must know, I got her while visiting America years ago."
+            jf "She was the last gift from my mother..."
+            jf "..."
+            player "I'm sorry, I didn't mean to bring up any bad memories."
+            jf "It's okay, even though mother is gone, Blanca has been by my side ever since."
+            show Blanca
+            blnca "Meeeooowww!"
+            hide Blanca
+            player "(That's very sweet, maybe I should consider adopting a pet...)"
             jump julieta_talking_choices
 
     # Looking around the room section
 
     label looking_around_room:
         player  "I'd like to look around your room for anything related to the case."
-
         jf "Fine, but you better not touch anything you're not supposed to you smelly pervert."
         jf "Or else you'll have to talk with Blanca and me."
-
+        show Blanca
         blnca "HISSSSSSSSSSS!"
-
+        hide Blanca
         player  "(I better make this quick, I don't want to have my eyes clawed out by this crazy beast.)"
         player  "(Or her cat.)"
         hide Julieta
@@ -282,26 +380,65 @@ label julieta_start:
         jump julieta_investigation_choices
 
         label jicloset:
-            player  "(I look at the closet with the dress in it)"
+            player "(This closet is huge! And it's filled to the brim with expensive looking outfits.)"
+            show dress
+            player "(Though this one dress looks like it has a rather large stain on it from some substance.)"
+            jf "Why are you getting so close to my clothes you gross pervet? Would you like to see how sharp Blanca's claws are?"
+            show Blanca
+            blnca "HISSSSSSSSSSS!"
+            hide Blanca
+            player "No need for that! I was just curious about this large stain on your dress here."
+            jf "Oh that. My father needed me to help him with something, but I accidently made a mess while doing it."
+            player "Can you tell me more about what you were helping your father with?"
+            jf "None of your buisness you smelly old fart."
+            player "(I'm pretty sure something like that is my buisness!)"
+            player "(Sigh. There's no point in trying to get more out of her, but this does seem like an important piece of information.)"
+            hide dress
             $ dress = True
             jump julieta_room_examination
 
         label jidesk:
-            player  "(Love letters and notebook)"
-            $ notebook = True
+            player "(She has a rather ornate desk here, and still just as pink as everything else in this room.)"
+            player "(There seems to be a bunch of hastily written letters here.)"
+            jf "You better not read those letters, they are for Romero's eyes only!"
+            player "(I see, love letters. I doubt there would be any useful information in these anyway.)"
             jump julieta_room_examination
 
         label jibed:
-            player  "(large pink bed looked at)"
+            player "(This has got to be the plushest looking bed I've ever seen!)"
+            player "(And the pinkest.)"
+            jf "You better not leave any of your gross smell on my bed! It will mask Romero's wonderful musk from when he last visited."
+            player "(What is with this kid and smells, perhaps she is actually part cat herself.)"
             jump julieta_room_examination
 
         label jicbed:
-            player  "(look at cat bed with a collection of odd objects on it.)"
-            $ cat_bed = True
+            player "(There is a small pink cushion here, I guess this must be Blanca's bed.)"
+            player "(Though there appears to be something peeking from under it.)"
+            show 8ball
+            player "(It's a billiard ball! Why on earth would that be here?)"
+            player "Julieta, there is a billiard ball by Blanca's bed, why is it there?"
+            jf "Ugh, not again. Whenever my idiot brother Ricardo takes Blanca to that gross parlor she always brings back something from there."
+            jf "Can you take that thing back to the parlor? It is an eyesore."
+            player "(I'm not your chore boy. But I guess I don't really have much of a choice.)"
+            hide 8ball
+            $ billiard_ball = True
             jump julieta_room_examination
 
         label jibookshelf:
-            player  "(look at bookshelf, there are lots of romance novels.)"
+            player "(There are so many books here! Though most of them seem to be romance novels.)"
+            player "(One seems to be sticking out slightly, I should look at it.)"
+            player "(This book is rather shabby, and looks to be different from the rest of these.)"
+            jf "Hey! Who said you could touch my books creep?"
+            player "Sorry, this odd book stood out to me."
+            jf "That's because it's one of Romero's alchemy notebooks. He left it here last time he visited."
+            player "(I see, it does seem to be filled with all sorts of strange recepies.)"
+            show notebook
+            player "(Huh!? There is a page missing here.)"
+            player "Julieta, do you know why a page has been torn out here?"
+            jf "No clue. I just remember coming back to my room one day to find the book open with a page torn out."
+            player "(That sounds suspicous. I should probably keep this in mind, it feels like an important clue.)"
+            hide notebook
+            $ notebook = True
             jump julieta_room_examination
 
 #########
@@ -310,23 +447,7 @@ label julieta_start:
 # name of the character.
 
 
-# TODO: match players with global vars
-
-image BGroom = "library-1219676-1920x1440.jpg"
-image Lorenzo = "jacob.png"
-image envelope = "classified-1241157-1920x1440"
-image weapon = "revolver-1176758-1919x1284.jpg"
-image bibleimg = "very-old-family-bible-1-1494754"
-image drugimg = "ancient-book-pt-2-1512285-1920x1440"
-
-define player = Character("Player", what_italic = True)
-define romeo_father = Character("Julio Gonzalez")
-define romeo = Character("Romeo Gonzalez")
-define teacher = Character ("Dolore De Muro")
-define iglesias = Character ("Iglesias")
-define juliet_father = Character("Lorenzo Fernandez")
-define julieta = Character("Julieta Fernandez")
-define Juliet_brother= Character("Ricardo Fernandezz")
+# TODO: match players with global vars # Done
 
 
 
@@ -334,52 +455,63 @@ define Juliet_brother= Character("Ricardo Fernandezz")
 
 label lorenzo_start:
 
-
+    # Show a background. This uses a placeholder by default, but you can
+    # add a file (named either "bg room.png" or "bg room.jpg") to the
+    # images directory to show it.
 
     scene BGroom
+    # This shows a character sprite. A placeholder is used, but you can
+    # replace it by adding a file named "eileen happy.png" to the images
+    # directory.
+
+    # These display lines of dialogue.
+
+    $ visited_lorenzo_room = True
 
     "You entered Lorenzo Fernandez's study room."
+    player "(Lorenzo Fernandez, I heard is the leader of Fernandez's family.)"
+    player "(A man as vicious as a snake, not easy to mess with, I have to be careful when I speak with him.)"
     menu choices:
-        "(To Lorenzo Fernandez)Would you please introduce yourself?":
+        "Who are you?":
             jump q1
-        "(To Lorenzo Fernandez)How’s your relationship with Gonzalez's family?":
+        "How’s your relationship with Gonzalez's family?":
             jump q2
-        "(To Lorenzo Fernandez)Do you know the relationship between Romeo and Juliet?":
+        "Do you know the relationship between Romeo and Juliet?":
             jump q3
-        "(To Lorenzo Fernandez)Do you support the marriage? ":
+        "Do you support the marriage? ":
             jump q4
-        "(To Lorenzo Fernandez)Do you know Jorge Gonzalez had been killed?":
+        "Do you know Jorge Gonzalez had been killed?":
             jump q5
         "Search the room":
             jump search
-        # "Return to the lobby"
-        #     jump lobby
+        "Return to the lobby":
+             jump global_room
 
     label q1:
         show Lorenzo
-        juliet_father "You dare to enter this room without knowing who I am?"
+        y "You dare to enter this room without knowing who I am?"
         "Lorenzo Fernandez's body guard send you out of the room."
-        return
+        jump global_room
     label q2:
         show Lorenzo
-        juliet_father "You probably should know the relationship isn’t good
+        y "You probably should know the relationship isn’t good
                         with our standing rivalry between each other.
                         Recently they have been an extra thorn in my side. "
         hide Lorenzo
         jump choices
     label q3:
         show Lorenzo
-        juliet_father "I believe I do."
+        y "I believe I do."
         hide Lorenzo
         jump choices
     label q4:
         show Lorenzo
-        juliet_father"This marriage has my blessing. "
+        y"This marriage has my blessing. "
         hide Lorenzo
         jump choices
     label q5:
         show Lorenzo
-        juliet_father"No, I left shortly after he fainted."
+        y"No, I left shortly after he fainted."
         hide Lorenzo
         jump choices
     ####################################################################
@@ -405,9 +537,9 @@ label lorenzo_start:
                 jump No1
         label Yes1:
             show Lorenzo
-            juliet_father"You dare touch my weapon?"
+            y"You dare touch my weapon?"
             "Lorenzo Fernandez's body guard send you out of the room."
-            return
+            jump global_room
         label No1:
             jump search
 
@@ -428,15 +560,13 @@ label lorenzo_start:
                 jump No2
         label Yes2:
             show drugimg
+            $ drug_recipe = True
             "You found a drug recipe teaches how to make sleeping pills into poison."
             hide drugimg
             jump search
         label No2:
             jump search
-    # This ends the game.
-
-    return
-#########
+    # This ends the room.
 
 #########
 #"""RICARDO FERNANDEZ"""
@@ -459,6 +589,8 @@ label parlor_start:
         y "Who are you?"
         r "Name's Ricardo, I'm Julieta's older brother."
         $ visited_parlor = True
+    else:
+        g "Back in the parlor. Filled with smoke as always."
 
     menu Decision:
         "What should I do?"
@@ -484,6 +616,15 @@ label parlor_start:
         "Tell me about yourself.":
             r "Why do you want to know about me? Oh, whatever. I've been bored with these families
             going on and on about who's land is who's. I suppose some conversation wouldn't hurt."
+            r "My father, Lorenzo, I can tell he doesn't quite like me. I don't care for the family business,
+            I'd rather let Julieta manage it. She seems to like that kind of thing."
+            r "I just want to do my own thing apart from the family. Being chained down doesn't sound much fun."
+            jump ricardo_talk
+
+        "What's Julieta's relation to Romero?":
+            r "Augh, Julieta goes on and on about that guy. She's clearly infatuated with him."
+            r "Julieta wanted father to get along with Romero's family. I don't blame her since
+            meetings between our families are also so tense, it must strain her relationship with Romero."
             jump ricardo_talk
 
         "Inquire about Jorge's death.":
@@ -501,7 +642,7 @@ label parlor_start:
             I overheard my father say."
             g "This works out nicely. I'm confident in my billiards abilities."
             y "Deal."
-            r "The only issue is this table is missing a ball. How one could misplace a billiard
+            r "The only issue is that this table is missing a ball. How one could misplace a billiard
             ball is beyond me."
             if billiard_ball:
                 g "A missing billiard ball? I should show him the one I found."
@@ -510,11 +651,26 @@ label parlor_start:
             $ inquired = True
             jump ricardo_talk
 
-        "Show Ricardo the billiard ball." if (inquired and billiard_ball):
+        "Show Ricardo the billiard ball." if (inquired and billiard_ball and not inquired2):
             y "I found the ball."
             r "Wow, I didn't expect you to actually go out of your way to find it! Well, are you ready to lose
             to the great Ricardo? I've been practicing while holed up in this mansion."
             g "I dominated Ricardo in a game of pool. And in the ensuing rematches."
+            r "How could I lose!? I've been doing nothing but hitting billiard balls since we got here!"
+            y "Alright, I've won. Now tell me what you heard."
+            r "Alright, alright. My father seemed very secretive about the matter."
+            r "He was talking hushedly to my sister, Julieta. Something about a drink and giving it to someone. Certainly didn't want anyone to
+            know about it."
+            y "Strange. Thank you for the information."
+            r "Whatever, just promise me a rematch later!"
+            $ inquired2 = True
+            jump ricardo_talk
+
+        "Can you tell me that information again?" if (inquired2):
+            r "Did you already forget? Fine. My father seemed very secretive about the matter."
+            r "He was talking hushedly to my sister, Julieta. Something about a drink and giving it to someone. Certainly didn't want anyone to
+            know about it."
+            y "Thanks."
             jump ricardo_talk
 
 
@@ -524,13 +680,143 @@ label parlor_start:
 #########
 #"""ROMERO GONZALEZ"""
 #########
-if not dolores_introduced:
-    pass
-label romero_start:
-    scene bg romero_room
-    with dissolve
 
-    show romero
+label romero_start:
+    # define images
+
+    # image romero_background = "romero_background.png"
+    # image romero_actor = "romero_actor.png"
+    # image romero_vial = "romero_vial.png"
+    # image romero_science_journal = "romero_science_journal.png"
+    # image romero_letter_from_julieta = "romero_letter_from_julieta.png"
+    # image romero_torn_page = "romero_torn_page.png"
+    # image romero_herbs = "romero_herbs.png"
+    # image romero_government_book = "romero_government_book.png"
+    # image romero_julieta_painting = "romero_julieta_painting.png"
+    # image romero_human_effigy = "romero_human_effigy.png"
+    # image romero_private_diary = "romero_private_diary.png"
+    # image romero_mother = "romero_mother.png"
+    # image romero_brother = "romero_brother.png"
+
+
+    # Player enters Romero Room with intro
+
+
+        # always happens
+        scene bg romero_room
+        with dissolve
+        #play music "romero_music.mp3"
+        #show romero_actor at right
+
+        if romero_kicked_out_once:
+            pass
+
+
+        if romero_kicked_out_twice:
+            "(I hope Romero will let me talk to him again but I doubt it.)"
+            player "Romero, I..."
+            romero "Get the fuck out of this room."
+            romero "How fucking dare you think I killed my father."
+            romero "I refuse to answer any more questions. Just leave..."
+            player "(...)"
+
+            jump exit_romero_room
+
+
+        # menu choices + dialogue options
+            "(I am about to speak with Romero Gonzalez. The victim's son.
+                Probably early 20s.)"
+            "(He's probably traumatized after seeing his father's dead body)"
+            "(Romero is likely in a traumatized emotional state right now, so I need to be
+                careful about sensitive subjects which may trigger him.)"
+
+            "Romero opens up the door for you to let you in."
+            "Romero goes to stand in the middle of the old antique looking room. Everything is made of artisan crafted wood."
+
+            romero "Well look who it is playing \"detective\"."
+            romero "Hurry up and ask your questions so you don't waste more of my
+                    time"
+
+        label romero_main_menu:
+            "(I have to decide what topics and questions to ask Romero now.)"
+            "Romero silently stares into your eyes just waiting."
+            menu:
+                # emotional state
+                "Romero wellness":
+                    if asked_about_emotional_state:
+                        romero "Did you even care to remember what I said the first time?"
+                        romero "You already"
+
+                    else:
+                        $ emotional_state = True
+                        jump emotional_state_sequence
+
+
+                # relationship to father/victim
+                "Relationship to father":
+                    pass
+                # ask Romero who he thinks killed his father
+                "Ask for Romero's opinion on the possible killer":
+                    if asked_about_father_killer:
+                        player "Who do you think killed your father?"
+
+                    else:
+                        $ asked_about_father_killer = True
+                        player "Who do you think killed your father and what reason would they have to do it?"
+                        "Romero rolls his eyes not just once, but twice."
+                        romero "I think you should be asking who DOES NOT want to kill my father."
+                        romero "The entire world wanted him dead and guess what, they got their wish."
+                        player "But who specifically here tonight do you think killed your father?"
+                        romero "You"
+                        jump exit_romero_room
+
+
+
+                # family fortune
+                "(Return to main room)":
+                    player "I should go."
+                    romero "Thanks for wasting more of my time."
+                    jump exit_romero_room
+
+
+        # emotional state sequence begin
+        label emotional_state_sequence:
+
+            player "You have my condolences Mr. Gonzalez. I am going to figure out who killed your father by tonight. How are you holding up?"
+
+            "Romero walks from the middle of the room and sits in a chair. He pours an odd looking vial out into a glass cup."
+            "Romero tilts his head down towards an empty chair and notions you to go sit and join him."
+            "The two chairs are by a lighted fireplace."
+            "You walk to the chair and sit in it, facing Romero."
+            "Romero looks at the burning fire for several moments before breaking his trance and glaring at you."
+            "He pulls out a vial full of red liquid and pours it into two glass cups."
+            "He picks up a half filled glass and offers you a drink."
+            menu drinks:
+                "Accept glass":
+                    "You take the glass from Romero's hand and drink the red liquid along with him, unsure of what it is."
+                "Ask what is the liquid in the vial":
+                    $ vial = True
+                    player "I am not drinking that until you tell me what it is and why it was in a vial."
+                    romero "It is my special wine. I always have vials on me at all times."
+                    "Romero holds up his almost empty glass and points to a table across the room with a few dimly lit candles on it."
+                    "You try to decipher all of these abstract transparent shapes."
+                    jump exit_romero_room
+
+                "Refuse the glass":
+                    pass
+
+
+        # emotional state sequence end
+
+        #
+
+
+        # play sound "creek.mp3"
+
+
+        label exit_romero_room:
+            stop music fadeout 3.0
+            jump global_room
 
 #########
 #"""JULIO GONZALEZ"""
@@ -596,7 +882,10 @@ label romeo_father_crimescene:
                 player "Could it be from all the stress?"
                 jump romeo_father_crimescene_body_menu
             "Mouth":
-                player "His lips seem to be burnt purple..."
+                $ mouth = True
+                player "His lips seem to be purple..."
+                if dress:
+                    player "I feel like I've seen purple stains on Julieta's dress too."
                 player "Is this the sign of royalty?"
                 player "...NO! There has to be a reason behind this..."
                 jump romeo_father_crimescene_body_menu
@@ -694,26 +983,12 @@ label romeo_father_roomscene:
 
 label romeo_father_end:
     player "Yeah, I suppose there's nothing else to do here. Let's check out the other evidence."
-    jump global_room_menu
+    jump global_room
 
 #########
 #"""DOLORES DE MURO"""
 #########
-if not dolores_introduced:
-  jump dolores_menu
 
-label dolores_start:
-  "By the window you see a small and simply dressed woman. She stares  into the courtyard which stays lit by the light of the pale moon."
-  "Her eyes, wide but empty, sit on a face held on folded hands. She doesn’t move, but finds you in her notice."
-  dm "I am Dolores de Muro. Teacher for the son of The Late Master Gonzales. You are the government negotiator, correct?"
-  dm "How goes your search sir?"
-  menu intro1:
-    set menuset
-
-    "pass":
-        pass
-
-label dolores_menu:
 
 #########
 #"""IGLESIAS"""
@@ -721,16 +996,20 @@ label dolores_menu:
 
 label iglesias_start:
     # show ig's room
-    # scene bg ig_start
+    scene ig_bg
 
-    # bg mucis
-    # play bg
+label visit_ig_check:
+    if visited_iglesias_room == False:
+        jump first_visit
+    else:
+        jump ntime_visit
 
+label first_visit:
+    $ visited_iglesias_room = True
+    scene ig_bg
     # show player
-    show player at left
-    with dissolve
-
-
+    # show player at left
+    # with dissolve
     player """
     So here is Iglesias's room.
 
@@ -741,7 +1020,7 @@ label iglesias_start:
     Or perhaps there are some secrets recorded by Iglesias and I find out some clues.
     """
 
-    hide player
+    # hide player
 
     # Test1: test if player would like to be rude and check Iglesias's table
     # if player is rude the main information the player will get is limited
@@ -751,10 +1030,10 @@ label iglesias_start:
     # show ig's messy table and room here
     # scene ig_meesy_room
 
-    show player at left
-    with dissolve
+    # show player at left
+    # with dissolve
     player "(Looks like Iglesias is not here right now.)"
-    hide player
+    # hide player
 
     show ig_table at center
     with dissolve
@@ -770,12 +1049,14 @@ label iglesias_start:
     menu:
         player "(I should wait Iglesias or try to find out something before he comes?)"
         "Maybe I can find something here.":
+            $ rude_visit = True
             jump iglesias_room
         "Maybe I should wait Iglesias.":
             jump iglesias_meet
 
 
 label iglesias_room:
+    scene ig_bg
     menu ig_room_menu:
         set menuset
         "Which I should start from?"
@@ -804,6 +1085,8 @@ label iglesias_room:
 
             player "Let's see what the next page says."
 
+            play sound "audio/ig_fpage.mp3"
+
             ig """
             Jorge discussed the marriage with me last month.
 
@@ -820,8 +1103,10 @@ label iglesias_room:
             # show ig_paper_2 at truecenter
             # with dissolve
             # play footstep
+            play music "audio/ig_fstep.mp3"
             # hide ig_paper_2
             player "Damn, He's back."
+            stop music
             jump iglesias_rude_meet
 
         "Bookself":
@@ -829,22 +1114,40 @@ label iglesias_room:
             # show ig_book_1 at truecenter
             # with dissolve
             # should be the history of Gonzalez to point out this family is a up=rising star
-            ig """
-            Gonzalez Family:
 
-            """
 
-            player "So, this is Gonzalez history books. What will Fernandez books say"
             # to point out Fernadez family is declining overlord
             ig """
             Fernandez Family:
+            Fernandez family used to be the overlord of  northern Mexico City for last 200 years.
+
+            For unkonw reason, in the last 60 years, they start to decline to the situation you can see right now.
+
+            Loranzo wants to bring Fernandez family back to they used to be 200 years ago.
             """
-            # play footstep
+
+            player "There are some notes inside this book."
+
+            ig """
+            Last week, Romero came and had a talk with me.
+
+            He wondered why Jorge could not understand his plans.
+
+            I know that He must be blamed by Jorge a few minutes ago.
+
+            I told him: Don't give up. Just keep working hard.
+            Jorge will know what your efforts means to the family
+
+            Romero left with the words: I hate my father.
+            """
+            play music "audio/ig_fstep.mp3"
 
             player "Damn, He's back."
+            stop music
             jump iglesias_rude_meet
 
 label iglesias_meet:
+    scene ig_bg
 
     show ig_p at right
     with dissolve
@@ -852,15 +1155,15 @@ label iglesias_meet:
     ig "What I can help you?"
     hide ig_p
 
-    show player at left
-    with dissolve
+    # show player at left
+    # with dissolve
     player """
     I am sorry about the death of Jorge Gonzalez.
     I know you are the close acquaintance of him.
 
     I want to know is there any thing you know relate this murder
     """
-    hide player
+    # hide player
 
     show ig_p at right
     with dissolve
@@ -890,7 +1193,7 @@ label iglesias_qa:
         "Lorenzo Fernandez":
             jump ig_lf_qa
         "Ricardo Fernandez":
-            jump ig_rg_qa
+            jump ig_rf_qa
         "Romero Gonzalez":
             jump ig_rg_qa
         "Jorge Gonzalez":
@@ -898,10 +1201,10 @@ label iglesias_qa:
         "Dolores de Muro":
             jump ig_dm_qa
         "I think I got enough information":
-            show player at left
-            with dissolve
+            # show player at left
+            # with dissolve
             player "Thank you Iglesias, I think I got enouth information I need."
-            hide player
+            # hide player
 
             show ig_p at right
             with dissolve
@@ -910,10 +1213,10 @@ label iglesias_qa:
             jump iglesias_end
 
 label ig_jf_qa:
-    show player at left
-    with dissolve
+    # show player at left
+    # with dissolve
     player "I want to know something about Julieta Fernandez."
-    hide player
+    # hide player
 
     show ig_p at right
     with dissolve
@@ -929,10 +1232,10 @@ label ig_jf_qa:
     jump ig_qa_menu
 
 label ig_lf_qa:
-    show player at left
-    with dissolve
+    # show player at left
+    # with dissolve
     player "I want to know something about Lorenzo Fernandez."
-    hide player
+    # hide player
 
     show ig_p at right
     with dissolve
@@ -953,10 +1256,10 @@ label ig_lf_qa:
     jump ig_qa_menu
 
 label ig_rf_qa:
-    show player at left
-    with dissolve
+    # show player at left
+    # with dissolve
     player "I want to know something about Ricardo Fernandez."
-    hide player
+    # hide player
 
     show ig_p at right
     with dissolve
@@ -972,10 +1275,10 @@ label ig_rf_qa:
     jump ig_qa_menu
 
 label ig_rg_qa:
-    show player at left
-    with dissolve
+    # show player at left
+    # with dissolve
     player "I want to know something about Romero Gonzalez."
-    hide player
+    # hide player
 
     show ig_p at right
     with dissolve
@@ -985,16 +1288,21 @@ label ig_rg_qa:
     Sometimes he comes with foods, somethimes he comes with questions, sometimes he comes with complaint.
 
     His ideas might be too creative for his father, so they always have some family squablle.
+
+    But he seems to be having a problem these days. It looks like he lost something important.
+    He was looking for it for a whole week.
     """
+    $ romero_missing = True
+
     hide ig_p
 
     jump ig_qa_menu
 
 label ig_jg_qa:
-    show player at left
-    with dissolve
+    # show player at left
+    # with dissolve
     player "I want to know something about Jorge Gonzalez."
-    hide player
+    # hide player
 
     show ig_p at right
     with dissolve
@@ -1019,10 +1327,10 @@ label ig_jg_qa:
     jump ig_qa_menu
 
 label ig_dm_qa:
-    show player at left
-    with dissolve
+    # show player at left
+    # with dissolve
     player "I want to know something about Dolores de Muro."
-    hide player
+    # hide player
 
     show ig_p at right
     with dissolve
@@ -1043,13 +1351,12 @@ label iglesias_rude_meet:
     ig "Oh, officer, you are here. I thought you might ask me to meet you ar the Congress Hall."
     ig "What I can help you?"
     hide ig_p
-    #player footstep
-    show ig_room_changed
+    # show ig_room_changed
     with dissolve
     ig "Psst..."
-    hide ig_room_changed
+    # hide ig_room_changed
 
-    show ig_chair at right
+    show ig_p at right
     with dissolve
 
     ig """
@@ -1063,12 +1370,20 @@ label iglesias_rude_meet:
 
     How rude you are !!!
     """
+    hide ig_p
 
 label iglesias_end:
-    show player at left
-    with dissolve
+    # show player at left
+    # with dissolve
     player "(It looks like these are what I can find here)"
-    jump global_room_menu
+    jump global_room
+
+label ntime_visit:
+    if rude_visit == True:
+        ig "Why you still want to enter my room, you bastard."
+    else:
+        ig "Sorry officer, I don't want to talk more. Leave my room, please."
+    jump global_room
 
 #########
 #"""CONCLUSION SCENE"""
@@ -1077,31 +1392,173 @@ label iglesias_end:
 label end_chapter:
     player "So, who committed the murder?"
 
+    define fernandez_owns_land = False
+    define gonzalez_owns_land = False
+    define married = False
+    define selected_murderer = -1
+
     menu murder_menu:
+        set menuset
+
         "Who committed the murder?"
 
         "Julieta Fernandez":
             $ selected_murdurer = 1
-            pass
+            show Julieta
+            jf "YOU CREEP! You dumb smelly jerk!"
+            romeo "Julieta! Did you really do it?
+            I can't live in this world without my Julieta!!"
+            jf "ROMERO, MY KNIGHT!!"
+            hide Julieta
+            player "And then I saw it."
+            player "..."
+            player "...Romero stabbed himself. He is dead."
+            show Blanca
+            blnca "Meeeooow!"
+            player "Good grief."
+            hide Blanca
+            # Romero commits suicide
+            # Decide land
+            jump decide_land
         "Lorenzo Fernandez":
             $ selected_murdurer = 2
-            pass
+            show Lorenzo
+
+            if notebook and inquired2 and dress and drug_recipe and mouth and romero_missing: # Lorenzo got caught with evidence
+                y "Why? You can't arrest me without cause!"
+                player "But I have all the evidence!"
+                y "NO! This is all fake! It can't be me!"
+                jf "FATHER! YOU CREEP! You dumb smelly jerk!
+                There's no way you could have done this, right father??"
+                y "My daughter..."
+                ig "That's what this tyrant deserves!"
+                y "Well that's what a tyrant should do."
+                r "DANG! I wouldn't even play pool with this bastard."
+                y "You are a failure."
+                romeo "..."
+                romeo "...what a crappy father..."
+                dm "I truly have no idea what Lorenzo hope to achieve with this..."
+                hide Lorenzo
+                # Arrest Lorenzo
+                player "I arrested Lorenzo after uncovering the undercover plot."
+                player "And with Lorenzo out of the way, Romero and Julieta can finally have the relationship that they desired."
+
+                scene mexico city
+
+                player "Sometime after, I read in the newspaper that Romero and Julieta had officially married."
+                player "And with that, both the Fernandez and Gonzalez families consolidated their land to become a powerful force!"
+                player "I will never forget this investigation. It was definitely the highlight of my investigative career."
+
+
+                # Happy ending
+                $ married = True
+                # Everyone wins land
+                $ gonzalez_owns_land = True
+                $ fernandez_owns_land = True
+                # Special ending to be implemented
+                g "~The end~"
+                return # The end
+            else:
+                # Lorenzo doesn't get arrested anyways
+                y "Why? You can't arrest me without cause!"
+                y "You will pay for this!!"
+                player "Well, I guess it wasn't so easy to arrest Lorenzo...
+                They have all of this money, and I don't have enough evidence..."
+                hide Lorenzo
+                # Decide land
+                jump decide_land
         "Ricardo Fernandez":
             $ selected_murdurer = 3
-            pass
+            show ricardo
+            r "There better be pool tables in jail!!"
+            hide ricardo
+            # Decide land
+            jump decide_land
         "Romero Gonzalez":
             $ selected_murdurer = 4
-            pass
-        "Julio Gonzalez":
+            player "Romero stares at his now empty glass of wine, with a dejection look."
+            jf "ROMERO, MY KNIGHT!!
+            Y-you didn't do this, did you?"
+            romeo "..."
+            jf "I CAN'T LIVE IN THIS WORLD WITHOUT MY KNIGHT IN SHINING ARMOR!!!!"
+            player "And then I saw it."
+            "..."
+            "...Julieta stabbed herself. She is dead."
+            "Good grief."
+            "Poor Blanca."
+            # Julieta will commit suicide
+            # Decide land
+            jump decide_land
+        "Jorge Gonzalez":
             $ selected_murdurer = 5
-            pass
+            show romeo father crimescene
+            player "It's super unfortunate, but the stress of the whole situation caused him to kill himself."
+            # Jorge apparently committed suicide
+            hide romeo father crimescene
+            # Decide land
+            jump decide_land
         "Dolores de Muro":
             $ selected_murdurer = 6
-            pass
+            dm "I truly have no idea what you hope to achieve with this..."
+            # WELL THEN
+            # Decide land
+            jump decide_land
         "Iglesias":
             $ selected_murdurer = 7
-            pass
+            show ig_p
+            ig "History will prove that you're wrong.
+            Don't forget me..."
+            hide ig_p
+            # Decide land
+            jump decide_land
+        "Blanca" if visited_julieta_room:
+            #$ selected_murdurer = 8
+            show Blanca
+            player "Of course! It was Blanca, the cat!"
+            blnca "Meeeooow!"
+            player "..."
+            player "WAIT, BLANCA IS TA LOKI'S BORK-BORK FRIEND!"
+            player "Loki would never let us pick Blanca as the murdurer! uwu"
+            hide Blanca
+            jump murder_menu
 
-    pass
+
+label decide_land:
+
+    if selected_murderer == 5:
+        player "There's no one to arrest- how tragic."
+    elif selected_murdurer == 2:
+        player "So I guess I can't arrest Lorenzo."
+    else:
+        player "And with that, I arrested the culprit with full confidence!"
+
+    scene mexico city
+
+    player "But now I have to decide who gets the land."
+
+    menu decide_land_menu:
+        "Who should I award the land to?"
+
+        "The Fernandez Family":
+            $ fernandez_owns_land = True
+            player "It just made sense to award the land to the Fernandez family."
+            player "I know they pretty much own all the land..."
+            player "And now the Gonzalez family has no place to do their scientific experiments."
+            player "But what if I awarded the land to the Gonzalez family?"
+            player "What if I could have stopped the Fernandez family's growth definitely?"
+            player "I guess I'll never know..."
+            g "~The end?~"
+            return
+        "The Gonzalez Family":
+            $ gonzalez_owns_land = True
+            player "It just made sense to award the land to the Gonzalez family."
+            player "They were the smarter family, they just didn't have the business knowledge."
+            player "Their scientific experiments were great... I could drink to that."
+            player "But what if I awarded the land to the Fernandez family?"
+            player "What if those experiments cause the demise of Mexico City?"
+            player "Perhaps we need a powerful family like the Fernandez's to keep us a strong society."
+            player "I guess I'll never know..."
+            g "~The end?~"
+            return
 
     return
