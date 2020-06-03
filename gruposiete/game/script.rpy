@@ -896,6 +896,7 @@ label romeo_father_crimescene:
                 player "Could it be from all the stress?"
                 jump romeo_father_crimescene_body_menu
             "Mouth":
+                $ mouth = True
                 player "His lips seem to be burnt purple..."
                 if dress:
                     player "I feel like I've seen purple stains on Julieta's dress too."
@@ -1840,7 +1841,7 @@ label end_chapter:
         "Lorenzo Fernandez":
             $ selected_murdurer = 2
             show Lorenzo
-
+            
             if notebook and inquired2 and dress and drug_recipe and mouth and romero_missing: # Lorenzo got caught with evidence
                 y "Why? You can't arrest me without cause!"
                 player "But I have all the evidence!"
