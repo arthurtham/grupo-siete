@@ -224,8 +224,8 @@ label julieta_start:
         player  "What is your name and occupation?"
         jf "My name is Julieta Fernandez, soon-to-be bride of the most perfect and handsome man on the planet!"
         player  "Huh!? Who are you talking about?"
-        jf "Romero Fernandez, you idiot! The perfect man and heir to the Fernandez Family!"
-        player  "(She's in love with the son of the the Fernandez family?)"
+        jf "Romero Gonzalez, you idiot! The perfect man and heir to the Gonzalez Family!"
+        player  "(She's in love with the son of the the Gonzalez family?)"
         player  "(I thought these two families hated eath other.)"
         player  "(Well whatever, it's about time I get this investigation under way.)"
 
@@ -392,7 +392,7 @@ label julieta_start:
             player "(This closet is huge! And it's filled to the brim with expensive looking outfits.)"
             show dress
             player "(Though this one dress looks like it has a rather large stain on it from some substance.)"
-            jf "Why are you getting so close to my clothes you gross pervet? Would you like to see how sharp Blanca's claws are?"
+            jf "Why are you getting so close to my clothes you gross pervert? Would you like to see how sharp Blanca's claws are?"
             show Blanca
             blnca "HISSSSSSSSSSS!"
             hide Blanca
@@ -440,7 +440,7 @@ label julieta_start:
             jf "Hey! Who said you could touch my books creep?"
             player "Sorry, this odd book stood out to me."
             jf "That's because it's one of Romero's alchemy notebooks. He left it here last time he visited."
-            player "(I see, it does seem to be filled with all sorts of strange recepies.)"
+            player "(I see, it does seem to be filled with all sorts of strange recipes.)"
             show notebook
             player "(Huh!? There is a page missing here.)"
             player "Julieta, do you know why a page has been torn out here?"
@@ -486,7 +486,7 @@ label lorenzo_start:
             jump q1
         "How’s your relationship with Gonzalez's family?":
             jump q2
-        "Do you know the relationship between Romeo and Juliet?":
+        "Do you know the relationship between Romero and Julieta?":
             jump q3
         "Do you support the marriage? ":
             jump q4
@@ -537,7 +537,7 @@ label lorenzo_start:
 
     label gun:
         show weapon
-        "You found a gun inside the draw, do you want check the gun?"
+        "You found a gun inside the drawer, do you want check the gun?"
         menu check1:
             "Yes":
                 hide weapon
@@ -555,7 +555,7 @@ label lorenzo_start:
 
     label letter:
         show envelope
-        "You found a letter from Romeo for the marriage approval."
+        "You found a letter from Romero for the marriage approval."
         hide envelope
         jump search
 
@@ -571,7 +571,7 @@ label lorenzo_start:
         label Yes2:
             show drugimg
             $ drug_recipe = True
-            "You found a drug recipe teaches how to make sleeping pills into poison."
+            "You found a drug recipe that teaches how to make sleeping pills into poison."
             hide drugimg
             jump search
         label No2:
@@ -594,10 +594,10 @@ label parlor_start:
     if visited_parlor == False:
         g "You enter the parlor. The smell of cigarettes lingers in the air. A man is sitting next to the pool table.
         He ashes his cigarette as you walk over."
-        r "Oh, you're the official who came validate father's land claim."
+        r "Oh, you're the official who came to validate father's land claim."
         r "Such a shame what happened to the head of the Gonzalez family."
         r "Can't say I knew the guy very well, though."
-        y "Who are you?"
+        player "Who are you?"
         r "Name's Ricardo, I'm Julieta's older brother."
         $ visited_parlor = True
     else:
@@ -639,20 +639,20 @@ label parlor_start:
             jump ricardo_talk
 
         "Inquire about Jorge's death.":
-            y "Do you know anything about what happened to Mr. Gonzalez?"
+            player "Do you know anything about what happened to Mr. Gonzalez?"
             r "Nothing important, I don't think. I know he didn't get along with my father."
-            y "I see."
+            player "I see."
             r "..."
             r "Actually I've just thought of something strange I overheard, but I'm
             fairly certain it was a private matter."
-            y "Please tell me anything you know. Information on the cause of Jorge's death
+            player "Please tell me anything you know. Information on the cause of Jorge's death
             could affect the rights to this land."
             r "Well, I'm not so unloyal to my family as to let internal matters known to outsiders,
             though I'm not the biggest fan of the way father acts towards me."
             r "Tell you what, you beat me in a match of billiards and I'll tell you something
             I overheard my father say."
             g "This works out nicely. I'm confident in my billiards abilities."
-            y "Deal."
+            player "Deal."
             r "The only issue is that this table is missing a ball. How one could misplace a billiard
             ball is beyond me."
             if billiard_ball:
@@ -663,16 +663,16 @@ label parlor_start:
             jump ricardo_talk
 
         "Show Ricardo the billiard ball." if (inquired and billiard_ball and not inquired2):
-            y "I found the ball."
+            player "I found the ball."
             r "Wow, I didn't expect you to actually go out of your way to find it! Well, are you ready to lose
             to the great Ricardo? I've been practicing while holed up in this mansion."
             g "I dominated Ricardo in a game of pool. And in the ensuing rematches."
             r "How could I lose!? I've been doing nothing but hitting billiard balls since we got here!"
-            y "Alright, I've won. Now tell me what you heard."
+            player "Alright, I've won. Now tell me what you heard."
             r "Alright, alright. My father seemed very secretive about the matter."
             r "He was talking hushedly to my sister, Julieta. Something about a drink and giving it to someone. Certainly didn't want anyone to
             know about it."
-            y "Strange. Thank you for the information."
+            player "Strange. Thank you for the information."
             r "Whatever, just promise me a rematch later!"
             $ inquired2 = True
             jump ricardo_talk
@@ -681,7 +681,7 @@ label parlor_start:
             r "Did you already forget? Fine. My father seemed very secretive about the matter."
             r "He was talking hushedly to my sister, Julieta. Something about a drink and giving it to someone. Certainly didn't want anyone to
             know about it."
-            y "Thanks."
+            player "Thanks."
             jump ricardo_talk
 
 
@@ -1377,7 +1377,7 @@ menu dm_menu_search:
 
         else:
             menu dm_menu_search_books:
-                "A chest full of paper and books sits infront of you, practically spilling out its contents."
+                "A chest full of paper and books sits in front of you, practically spilling out its contents."
 
                 "Loose Paper":
                     "In her chest is a loose collection of paper. It appears to be a series of correspondences with a friend of hers."
@@ -1462,11 +1462,11 @@ label first_visit:
 
     # player's choice
     menu:
-        player "(I should wait Iglesias or try to find out something before he comes?)"
+        player "(I should wait for Iglesias or try to find out something before he comes?)"
         "Maybe I can find something here.":
             $ rude_visit = True
             jump iglesias_room
-        "Maybe I should wait Iglesias.":
+        "Maybe I should wait for Iglesias.":
             jump iglesias_meet
 
 
@@ -1509,7 +1509,7 @@ label iglesias_room:
             He said he just met with Lorenzo the day before he came to see me.
 
             He said Lorenzo was going too far!
-            He know he can't win the contest about this island so he told me that.
+            He know he can't win the contest about this land so he told me that.
 
             The only condition Julieta could
             marry Romero is we have to give up this contest.
@@ -1537,9 +1537,9 @@ label iglesias_room:
             Fernandez Family:
             Fernandez family used to be the overlord of  northern Mexico City for last 200 years.
 
-            For unkonw reason, in the last 60 years, they start to decline to the situation you can see right now.
+            For unknown reasons, in the last 60 years, they start to decline to the situation you can see right now.
 
-            Loranzo wants to bring Fernandez family back to they used to be 200 years ago.
+            Lorenzo wants to bring Fernandez family back to they used to be 200 years ago.
             """
 
             player "There are some notes inside this book."
@@ -1568,7 +1568,7 @@ label iglesias_meet:
 
     show ig_p at right
     with dissolve
-    ig "Oh, officer, you are here. I thought you might ask me to meet you ar the Congress Hall."
+    ig "Oh, officer, you are here. I thought you might ask me to meet you at the Congress Hall."
     ig "What I can help you?"
     hide ig_p
 
@@ -1587,13 +1587,13 @@ label iglesias_meet:
     ig """
     Thank you for your efforts to find out the murderer. I want to find out the murderer too.
 
-    However, the problem is I don't find out any clues by myslef.
+    However, the problem is I don't find out any clues by myself.
 
     You know I am a historian. History could always help us.
 
-    Is there any thing about the Gonzalez family and Fernandez family you want to know.
+    Is there any thing about the Gonzalez family and Fernandez family you want to know?
 
-    I will tell you everythin I know.
+    I will tell you everything I know.
     """
     hide ig_p
 
@@ -1638,9 +1638,9 @@ label ig_jf_qa:
     show ig_p at right
     with dissolve
     ig """
-    Oh, Juliete is a nice girl. Maybe you don't know it.
+    Oh, Julieta is a nice girl. Maybe you don't know it.
 
-    When Romero meet Julieta for the first time, they don't knwo each other's family.
+    When Romero meet Julieta for the first time, they don't know each other's family.
 
     Since that time. they start to fall in love.
     """
@@ -1657,13 +1657,13 @@ label ig_lf_qa:
     show ig_p at right
     with dissolve
     ig """
-    Oh, Loranzo Fernandez. He is a ambitious guy. You may not know it.
+    Oh, Lorenzo Fernandez. He is a ambitious guy. You may not know it.
 
     Fernandez family used to be the overlord of  northern Mexico City for last 200 years.
 
-    For unkonw reason, in the last 60 years, they start to decline to the situation you can see right now.
+    For unknown reasons, in the last 60 years, they start to decline to the situation you can see right now.
 
-    Loranzo wants to bring Fernandez family back to they used to be 200 years ago.
+    Lorenzo wants to bring Fernandez family back to they used to be 200 years ago.
 
     Even sometimes he may did something radical, but I need to admit that he is talented,
     and Fernandez family is much better than 10 years ago.
@@ -1683,7 +1683,7 @@ label ig_rf_qa:
     ig """
     To be honest, I don't like Ricardo Fernandez.
 
-    He is just a balck sheep and I don'know a lot about him.
+    He is just a sheep and I don't know a lot about him.
 
     But it might be reasonable for him to do something ridiculous.
     """
@@ -1702,7 +1702,7 @@ label ig_rg_qa:
     ig """
     Oh, my boy Romero. He is such a gifted young guy. He always come to see me.
 
-    Sometimes he comes with foods, somethimes he comes with questions, sometimes he comes with complaint.
+    Sometimes he comes with foods, sometimes he comes with questions, sometimes he comes with complaint.
 
     His ideas might be too creative for his father, so they always have some family squablle.
 
@@ -1735,9 +1735,9 @@ label ig_jg_qa:
 
     The reason why the marraige come to nothing is Lorenzo was pushing Jorge too far.
 
-    Loranzo wants Jorge to give up this island.
+    Lorenzo wants Jorge to give up this land.
 
-    Alas! Rest in peace, my frind Jorge.
+    Alas! Rest in peace, my friend Jorge.
     """
     hide ig_p
 
@@ -1752,11 +1752,11 @@ label ig_dm_qa:
     show ig_p at right
     with dissolve
     ig """
-    I don't know that guy a lot. All I know is he is Romero's teacher.
+    I don't know that person a lot. All I know is she is Romero's teacher.
 
-    But I heared other people said that His village property were seized by Jorge.
+    But I heard other people said that her village property were seized by Jorge.
 
-    He'll be a bit of suspect.
+    She'll be a bit of suspect.
     """
     hide ig_p
 
@@ -1815,7 +1815,7 @@ label end_chapter:
     define selected_murderer = -1
 
     menu murder_menu:
-        set menuset
+        #set menuset
 
         "Who committed the murder?"
 
@@ -1916,12 +1916,12 @@ label end_chapter:
             # Decide land
             jump decide_land
         "Dolores de Muro":
-            $ selected_murdurer = 6
             show murocharfinal
+            $ selected_murdurer = 6
             dm "I truly have no idea what you hope to achieve with this..."
+            hide murocharfinal
             # WELL THEN
             # Decide land
-            hide murocharfinal
             jump decide_land
         "Iglesias":
             $ selected_murdurer = 7
