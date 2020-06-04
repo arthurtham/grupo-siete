@@ -37,6 +37,11 @@ image weapon = "revolver-1176758-1919x1284.jpg"
 image bibleimg = "very-old-family-bible-1-1494754"
 image drugimg = "ancient-book-pt-2-1512285-1920x1440"
 
+# Romero's image and music
+image romero_room = "romero_room.png"
+define background_music = "fireplacemusic.mp3"
+
+
 # Julieta's images
 image Julieta = "Julieta.PNG"
 image Blanca = "Blanca.png"
@@ -74,27 +79,15 @@ label start:
 
     # ROMERO GONZALEZ'S boolean flags
     default visited_romero = False
-    default leather_bag = False
     default vial = False
-    default science_journal = False
-    default letter_from_julieta = False
-    default torn_page = False
-    default herbs = False
-    default government_book = False
-    default relationship_with_father = False
-    default relationship_with_mother = False   # dead
-    default relationship_with_brother = False  # dead
-    default neck_scar = False
-    default julieta_painting = False
-    default human_effigy = False
-    default private_diary = False
-    # Could make this a false option for potential "murder" or death cause
-    # when player decides who to blame.
+    default herb = False
+    default relationship_to_father = False
     default father_suicide_note = False
-    default romero_kicked_out_once = False
-    default romero_kicked_out_twice = False
+    default romero_suicide_note = False
+    default romero_kicked_out = False
     default asked_about_emotional_state = False
     default asked_about_father_killer = False
+    default disgust = False
 
     # JULIETA FERNANDEZ'S boolean flags
     default visited_julieta_room = False
@@ -689,41 +682,27 @@ label parlor_start:
             jump Decision
 
 #########
-#"""ROMERO GONZALEZ"""
-#########
+    #"""ROMERO GONZALEZ"""
+    #########
 
-label romero_start:
-    # define images
+    # define images and music
 
-    # image romero_background = "romero_background.png"
-    # image romero_actor = "romero_actor.png"
-    # image romero_vial = "romero_vial.png"
-    # image romero_science_journal = "romero_science_journal.png"
-    # image romero_letter_from_julieta = "romero_letter_from_julieta.png"
-    # image romero_torn_page = "romero_torn_page.png"
-    # image romero_herbs = "romero_herbs.png"
-    # image romero_government_book = "romero_government_book.png"
-    # image romero_julieta_painting = "romero_julieta_painting.png"
-    # image romero_human_effigy = "romero_human_effigy.png"
-    # image romero_private_diary = "romero_private_diary.png"
-    # image romero_mother = "romero_mother.png"
-    # image romero_brother = "romero_brother.png"
-
+    image romero_room = "romero_room.png"
+    define background_music = "audio/fireplacemusic.mp3"
 
     # Player enters Romero Room with intro
 
 
+    label romero_start:
         # always happens
         scene bg romero_room
+        show romero_room
         with dissolve
-        #play music "romero_music.mp3"
+        play music fireplacemusic
         #show romero_actor at right
 
-        if romero_kicked_out_once:
-            pass
 
-
-        if romero_kicked_out_twice:
+        if romero_kicked_out:
             "(I hope Romero will let me talk to him again but I doubt it.)"
             player "Romero, I..."
             romero "Get the fuck out of this room."
@@ -733,43 +712,57 @@ label romero_start:
 
             jump exit_romero_room
 
-
         # menu choices + dialogue options
-            "(I am about to speak with Romero Gonzalez. The victim's son.
-                Probably early 20s.)"
-            "(He's probably traumatized after seeing his father's dead body)"
-            "(Romero is likely in a traumatized emotional state right now, so I need to be
-                careful about sensitive subjects which may trigger him.)"
+        "(I am about to speak with Romero Gonzalez. The victim's son. Probably early 20s.)"
+        "(He's probably traumatized after seeing his father's dead body)"
+        "(Romero is likely in a traumatized emotional state right now, so I need to be careful about sensitive subjects which may trigger him.)"
 
-            "Romero opens up the door for you to let you in."
-            "Romero goes to stand in the middle of the old antique looking room. Everything is made of artisan crafted wood."
+        "Romero opens up the door for you to let you in."
+        "Romero goes to stand in the middle of the old antique looking room. Everything is made of artisan crafted wood with a fireplace burning."
 
-            romero "Well look who it is playing \"detective\"."
-            romero "Hurry up and ask your questions so you don't waste more of my
-                    time"
+        romero "Well look who it is playing \"detective\"."
+        romero "Hurry up and ask your questions so you don't waste more of my time."
 
         label romero_main_menu:
             "(I have to decide what topics and questions to ask Romero now.)"
             "Romero silently stares into your eyes just waiting."
-            menu:
+            menu romero_choices:
+
                 # emotional state
-                "Romero wellness":
+                "Ask about Romero's emotional state (notice Romero's facial expression)":
                     if asked_about_emotional_state:
+                        player "I know you just saw your father die, how are you holding up? You don't look too well"
                         romero "Did you even care to remember what I said the first time?"
-                        romero "You already"
+                        romero "You already \"investigated\" how I feel."
+                        jump romero_choices
 
                     else:
                         $ emotional_state = True
+                        player "You don't look too well"
                         jump emotional_state_sequence
 
 
                 # relationship to father/victim
-                "Relationship to father":
-                    pass
+                "Relationship to father (see painting of Romero and Jorge)":
+                    if relationship_to_father:
+                        player "I see you and your father in this painting. You too look close to each other."
+                        player "Tell me about your relationship with your father."
+                        romero "No, pay attention to what you ask. I am not going to repeat myself twice."
+                        jump romero_choices
+
+                    else:
+                        $ relationship_to_father = True
+                        player "Tell me about your relationship with your father."
+                        jump relationship_to_father_sequence
+
+
                 # ask Romero who he thinks killed his father
                 "Ask for Romero's opinion on the possible killer":
                     if asked_about_father_killer:
                         player "Who do you think killed your father?"
+                        romero "Don't waste my breath with the same question you already asked."
+                        romero "Maybe you shouldn't be a detective?"
+                        jump romero_choices
 
                     else:
                         $ asked_about_father_killer = True
@@ -778,13 +771,14 @@ label romero_start:
                         romero "I think you should be asking who DOES NOT want to kill my father."
                         romero "The entire world wanted him dead and guess what, they got their wish."
                         player "But who specifically here tonight do you think killed your father?"
-                        romero "You"
-                        jump exit_romero_room
+                        romero "You know, I wouldn't doubt if it was someone like Dolores or even Julieta's father."
+                        player "You don't like either one of them?"
+                        romero "Oh no, I do like them, I just think they are the most capable of murder besides myself."
+                        jump romero_choices
 
-
-
-                # family fortune
+                # return to main room
                 "(Return to main room)":
+                    $ visited_romero = True
                     player "I should go."
                     romero "Thanks for wasting more of my time."
                     jump exit_romero_room
@@ -805,28 +799,327 @@ label romero_start:
             menu drinks:
                 "Accept glass":
                     "You take the glass from Romero's hand and drink the red liquid along with him, unsure of what it is."
-                "Ask what is the liquid in the vial":
-                    $ vial = True
-                    player "I am not drinking that until you tell me what it is and why it was in a vial."
-                    romero "It is my special wine. I always have vials on me at all times."
-                    "Romero holds up his almost empty glass and points to a table across the room with a few dimly lit candles on it."
-                    "You try to decipher all of these abstract transparent shapes."
-                    jump exit_romero_room
+                    "The taste is digusting. A warming feeling goes down your throat and into your chest."
+                    "You squeeze your eyes until they are about to pop out. Then, you blink your eyes a few times at how horrible the wine tastes."
+                    player "(I should comment on the wine. Maybe this will get Romero to trust me more.)"
+
+                    menu comment_wine:
+                        "Compliment the wine":
+                            player "This wine tastes extremely rich. Thank you Romero."
+                            romero "Awh you're trying to like me so you can get more information out of him huh?"
+                            "Your cheeks feel a lot warmer and get embarrassed by Romero's bluntness."
+                            player "No Romero, I really mean it. The wine tastes good. It is not the best but I appreciate you allow me to try it."
+                            romero "Cut the fucking bullshit. You know, if you had been more direct with your words, I might have just liked you better."
+                            jump drinks
+
+                        "Spit out the wine in disgust":
+                            $ disgust = True
+                            "You aim your head at the fireplace and spit out the wine from your mouth."
+                            "Red splatters that almost resemble blood land right in front of the fireplace."
+                            player "This win is abosolutely digusting? Why are you drinking this trash?"
+                            romero "Ha! I like that honest side of yours. Right to the point."
+                            romero "..."
+                            romero "To be honest, this is.... this WAS my father's favorite wine."
+                            romero "I always thought it tasted like completely raw meat."
+                            romero "I'm not sure why father always liked the taste of horrible drinks and food. With all the money he had, that I NOW have, I can't believe he ate shitty food on purpose."
+                            player "You mentioned the money you had just inherited, how can you be sure he left you everything? Don't you have any other siblings or family?"
+                            romero "No, my mother and younger brother both died out at sea. They were sailing to the Caribbean one day and never came back. End of story."
+                            player "So you do believe he left you everything in his fortune."
+                            romero "Regardless of whether I wanted the fortune or not, I have to uphold his current business affairs."
+                            romero "Whatever he was working on is now my issue, not yours, so don't concern yourself with it."
+                            jump romero_choices
+
+
+                "Ask what liquid is in the vial":
+                    if vial:
+                        "You already asked about this."
+                    else:
+                        $ vial = True
+                        player "I am not drinking that until you tell me what it is and why it was in a vial."
+                        romero "It is my special wine. I always have vials on me at all times."
+                        "Romero holds up his almost empty glass and points to a table across the room with a few dimly lit candles on it."
+                        "You squint at the table and try to decipher all of these abstract transparent shapes in the dark room."
+                        player "(I think those are beakers and vials, hmm I wonder what Romero does with those besides drink them.)"
+                        jump drinks
 
                 "Refuse the glass":
-                    pass
+                    romero "Not willing to take a chance on my wine even after I offer it to you?"
+                    romero "What a rude gesture to make as my guest. I guess I'll just drink both glasses then myself."
+                    "Romero chugs down his own glass first, then swallows the glass of wine he originally offered you."
+                    romero "Too bad you're missing out on the some expensive ass wine."
+                    "Romero stumbles to stand up and something falls out of his pocket."
+                    "You reach over to grab the item and take a closer look at it for yourself"
+                    player "(What is this thing?)"
+                    player "Romero, is this ..."
+
+                    menu:
+                        "herb":
+                            player "... an herb?"
+                            jump herb_sequence
 
 
+                        "folded note":
+                            player "... a folded note?"
+                            romero "STOP!"
+                            romero "Give me that note back right now!!!"
+                            "Romero tries to grab it from your hands."
+                            "You pull your hand with the note back just in time to stop Romero from getting it."
+                            romero "Okay look. I get that you are trying to do your job to figure out my father's killer but do NOT open up that note."
+                            player "Why, Romero? Got something you don't want me to know about?"
+                            romero "I--"
+                            romero "It's not like that, what is written on that note won't help you find the murderer. It will only complicate the situation further..."
+                            romero "I will explain if you just give me the fucking note, okay?"
+                            player "(This note could be used as evidence to solve the case. What to do...)"
+                            menu:
+                                "Give Romero the note back":
+                                    player "Here Romero, take the note back."
+                                    player "You better tell me what was on that piece of paper and why it was so important for you to have it."
+                                    romero "You're right, I said was going to explain so I will explain."
+                                    "Romero begins to pace back and forth."
+                                    player "(Romero isn't saying anything, just walking.)"
+                                    player "(Is he trying to stall or come up with a lie?)"
+                                    player "(Or maybe what he is about to say is extremely important.)"
+                                    romero "That note is from Ricardo Fernandez, Julieta's older brother."
+                                    player "Okay, so what did he write on there?"
+                                    romero "The note mentions how much he hated my father."
+                                    romero "Ricardo wrote that he wished something bad would happen to my father so the Fernandez family would no longer be bothered by my father."
+                                    romero "I always liked Ricardo, as much as I believe he hates my father, I don't actually think he is capable of murder."
+                                    player "Why are you sticking up for Ricardo, a man who may have killed your father?"
+                                    romero "I'm not exactly, again, I don't think he has anything to actually gain from my father."
+                                    player "(Not even gain land and money? I should take that note)"
+                                    player "Since that note may have the evidence for the motive, give to me so I can officially make it part of the case."
+                                    romero "No."
+                                    player "Without seeing the note for myself and holding onto it, I can't take your word as fact. The note can become real evidence for the motive."
+                                    "Romero walks close to the fireplace with the note in hand."
+                                    romero "That's fine with me-"
+                                    "Romero tosses the note into the fireplace."
+                                    player "(What the fuck did he just do? That note could have solved the entire case..)"
+                                    player "(Now I will never truly know what was written on that note.)"
+                                    player "You just damaged what could have been valuable evidence!"
+                                    romero "Shut up, we did not need to blame an innocent man."
+                                    romero "Any other questions? You're not going to get much out of me."
+                                    jump romero_choices
+
+                                "Read the note":
+                                    $ romero_kicked_out = True
+                                    player "No Romero, this note could help solve the case."
+                                    romero "GIV-"
+                                    player "Even if you think this note contains nothing relevant, I need to examine everything."
+                                    romero "You don't underst-"
+                                    player "Enough, Romero. Let me read this note first, then you can say what you have to say afterwards."
+                                    romero "..."
+                                    player "(Okay, he finally shut his mouth so I can read this note now.)"
+                                    "With your hands, you begin to open up the folded note. One unbend, one flip at a time, the note reveals itself to have many words."
+                                    "You take a closer look at examining the front side. The note turns out to not just be a mere note but an entirely filled single sided letter."
+                                    "Pausing for a moment before you read the letter line by line, you look at the bottom and can see that the person who signed this letter has had their name scribbled out completely."
+                                    "Even with the first name being unidentifiable, the last name clearly reads \"Gonzalez\"."
+                                    "Looking up after trying to discern the scribbled name, you make eye to eye contact with Romero."
+                                    "He stares back at you with an ice cold face that is about to shatter."
+                                    "You go back to looking down at the letter in your hands and begin to read the first sentence."
+                                    "\"This is a suicide letter, please read carefully.\""
+                                    "Shocked, you walk closer to Romero who is now staring into the burning flames."
+                                    player "Romero, was-"
+                                    romero "Don't you dare ask-"
+                                    player "-was this letter written by..."
+
+                                    # menu options are a trick. If Julio selected, letter belongs to Romero.  If Romero selected, letter belongs to Julio
+                                    menu:
+                                        "Jorge Gonzalez":
+                                            player "Was this letter written by Jorge Gonzalez?"
+                                            romero "No, I wrote it. That's my suicide letter from three weeks ago."
+                                            "Horrified, you continue reading the letter."
+                                            jump romero_suicide_letter
+
+                                        "Romero Gonazalez":
+                                            player "Was this letter written by you?"
+                                            romero "No, my father wrote the letter. You can check the way he wrote our last name on the paper."
+                                            player "When did you find the letter, today??"
+                                            romero "I found the letter last night."
+                                            "Shocked, you continue reading the letter."
+                                            jump father_suicide_letter
         # emotional state sequence end
 
-        #
+
+        # herb begin
+        label herb_sequence:
+            $ herb = True
+            "You pick up the herb and inspect it closely."
+            player "What is this herb?"
+            romero "It is an ingredient for one of my new potions."
+            romero "How about you take a guess at what you think the potion is?"
+            menu:
+                "love potion":
+                    player "Is it a love potion?"
+                    romero "No you stupid fool, I am already in love with Julieta! If you knew that then why would you ask if it was a love potion??"
+                    player "I-"
+                    romero "But you're not too far off. What if I told you that I could love forever."
+                    player "What do you mean exactly by forever?"
+                    romero "Well, we are going to die at some point right? When we die, we no longer able to love. I am trying to find we can all live forever, be immortal."
+                    player "Immortal..? That's not humanly possible."
+                    romero "Not possible yet. Not until I decode the essence of life itself."
+                    player "(Why is Romero so interested in life and death? For what reason does he want to live forever?)"
+                    player "Do you not think we live long enough as it is?"
+                    romero "No, even though my father is dead just some distance away, imagine if could never die."
+                    player "Look, I get this is a hard time for you, but everyone MUST die at some point."
+                    romero "But if our ultimate purpose is to die, then shouldn't we just kill ourselves and be done with it?"
+                    player "Uh no, that's not what I meant-"
+                    romero "With a potion such as this, death would no longer be our true purpose and we could truly find the meaning the life."
+                    player "I am not sure what you are getting at Romero, but please, let me get back to asking real questions about the case."
+                    romero "Don't you understand? With a potion like this, the very structue of our trivial human life would change!"
+                    player "(Fucking psycho.)"
+                    player "Moving on..."
+                    jump romero_choices
+
+                "fake death potion":
+                    player "Is it a potion to fake your own death?"
+                    romero "HAH! How absurd! Do you think I care about such tricks?"
+                    player "I've seen people fake their own deaths before! Well, in plays.."
+                    romero "This isn't a fucking game. My own father is dead out there."
+                    menu:
+                        "Life is a game, Romero (blame Romero for Jorge's death)":
+                            $ romero_kicked_out = True
+
+                            player "Life is a game, Romero."
+                            romero "So my father dead outside is a game to you??"
+                            romero "Do you think trying to solve my father's case is supposed to be fun?"
+                            romero "Do you even care if you solve this case or not?"
+                            player "Of course, I do. I just think you could have given your father some type of potion like this."
+                            romero "Fuck you for insinuating I killed my own father you piece of shit."
+                            player "You know I had to ask that question, I-"
+                            romero "Get out and stay out."
+                            "After upsetting Romero, you leave Romero's room and return back to the main room."
+                            jump exit_romero_room
+
+                        "You're right, I am sorry Romero (do not blame Romero for Jorge's death":
+                            player "You're right, I am sorry Romero. I did not mean to joke about your father's murder."
+                            romero "Whatever, apologies are just empty words that people use to manipulate their own fucked up actions."
+                            player "I deserved that."
+                            romero "Yes, you did. Now, any other concerns or questions at all?"
+                            jump romero_choices
 
 
-        # play sound "creek.mp3"
+        # herb end
+
+        # relationship to father sequence
+        label relationship_to_father_sequence:
+            romero "You can ask anyone around here. My father and I's relationship isn't the best."
+            player "What didn't you like about him."
+            romero "No, it's not that I didn't like my father. He has my respect, he has the repect of everyone."
+            player "So why the strained relationship then?"
+            romero "Some time after my mother and sister died, we had little reason to interact with each other besides business."
+            romero "My mother was the buffer between my dad and I. In fact, the only reason my father and I didn't kill each other was because she was always present."
+            romero "Neither of us ever wanted to see her upset because she was the most positive person in the world. And yet, she died."
+            romero "Without her, we grew apart urther and further."
+            player "Did Juilo ever do anything specific to make your relationship uncomfortable?"
+            romero "Not exactly... I do think he blames me for my mother and sister's deaths."
+            player "What? Why?"
+            romero "How the fuck should I know? I am not a mind reader."
+            romero "..."
+            romero "He told me that my interest in alchemy and trying to understand life's secrets was reason."
+            romero "That bastard really thinks discovering life through science angered our \"creator\" and in response, the \"creator\" took the lives of mother and sister."
+            player "You know he was just upset about their dea-"
+            romero "I know, that's what I tell myself but what kind of father blames their own son for a sailing accident or natural disaster that?"
+            romero "We never found the boat or the bodies but I'm sure the waves must have teared apart the boat."
+            romero "He should blame his own \"creator\" for their deaths, not me."
+            player "Thank you for sharing that, Romero."
+            romero "Whatever, just hurry up. This is all mentally draining."
+            jump romero_choices
+
+
+        # father suicide "note" begin
+        label father_suicide_letter:
+            "\"To whoever finds this letter, remember my last few words.\""
+            "\"By killing myself, I leave behind my son, Romero, and wealth.\""
+            "\"But, Romero does not get that wealth, the wealth belongs to Dolores.\""
+            "\"Dolores does not receive everything, only certain assets I have accumulated throughout my life time.\""
+            "\"Regarding my death, I am taking my own life because I am not a happy man.\""
+            "\"My wife and daughter are dead and all I am left is a son who practices witchcraft and strays away from the light.\""
+            "\"I've considered killing Romero myself, but I could not do that to my own son, no matter how much of a demon he is.\""
+            "\"With all of the money in the world, nothing could bring back my wife.\""
+            "\"And for that reason and that reason alone, I choose to no longer live in a world without her.\""
+            "\"I just hope that I am forgiven for this sin in the afterlife.\""
+            "You finish reading the suicide letter."
+            player "Your father wanted to kill himself?? Why didn't you tell me this sooner, Romero??"
+            romero "My father was drunk last night. Whenever he is drunk, he wants to kill himself."
+            player "(So maybe Juilo killed himself and this wasn't a murder?)"
+            romero "I wouldn't put it past my father to kill himself and then try to place the blame on someone like me."
+            romero "He has always hated me. Don't believe a word that man says."
+            player "(This is a lot to take in.. I should return to asking more questions in light of this.)"
+            jump romero_choices
+
+        # father suicide "note" end
+
+
+        # Romero suicide "note" begin
+        label romero_suicide_letter:
+            $ romero_suicide_note = True
+
+            "\"What is the point in living? That question can be interpreted many different ways.\""
+            "\"As a man of science, alchemy has revealed to me many universal truths.\""
+            "\"For every action in the world, there is an equally resulted reaction.\""
+            "\"But I often ask myself, are thoughts actions too? Can my very own thinking be considered an action that warrants a reaction?\""
+            "\"Without even realizing it, people control their own lives based on perspective and how they think.\""
+            "\"People's bodies and health can deteriorate by having negative thoughts of self hate.\""
+            "\"So if our own thoughts cause us our human body to change, to be altered, doesn't that mean our thoughts count as actions then?\""
+            "\"You may now be wondering how any of this has to do with alchemy exactly. Well, let me explain.\""
+            "\"In alchemy, the emphasis of creating and destroying cannot be more evident.\""
+            "\"Whether I am combining multiple ingredients together to make something new or deconstructing a material from the natural world, I see the same patterns.\""
+            "\"Every single object in existence comes together through a combination of repurposed atoms.\""
+            "\"I say repurposed atoms because atoms cannot be created or destroyed, only given a new role to fulfill.\""
+            "\"Since we cannot make new atoms, this must mean that there is a finite number of atoms in the universe.\""
+            "\"With a finite number, objects that are formed and shaped together by atoms must be broken down at some point.\""
+            "\"Humans are not special, we are made up of these atoms. From the second we are born, we begin to already self deconstruct.\""
+            "\"Assuming we are intelligent life, we are aware at all times of our destined yet gradual demise.\""
+            "\"It is thus only human to be self destructive since every part of us is constantly dying.\""
+            "\"If we are all meant to die and have our atoms repurposed, why not be in control of our own deaths.\""
+            "\"Mother and sister lacked control of their own destruction, but I will be in control of how I stop existing.\""
+            "\"Although my love for Julieta is strong, she too will perish at some point, leaving me.\""
+            "\"If you find this letter, know that I successfully completed suicide and that my poison allowed me to enter a better place away from Earth.\""
+
+            player "(...)"
+            romero "Questions? Concerns? Obviously I didn't kill myself or else we wouldn't be having this conversation right now."
+            menu:
+                "Why didn't you kill yourself?":
+                    player "Romero, why didn't you end up killing yourself?"
+                    romero "I tried to. I attempted suicide."
+                    player "If you tried to kill yourself then how are you alive."
+                    romero "As much as I hate to admit this, the poison did not work."
+                    romero "I thought I came up with the perfect poison that would kill myself without pain."
+                    romero "I drank the poison right before I went to sleep, hoping I do would die in my dreams."
+                    romero "But it turns out I am not that even good of an alchemist despite all my time and dedication to learning alchemy."
+                    romero "Recently, I began on making a new poison from scratch, but I haven't been able to find my alchemist book where I write down all of my experiments."
+                    player "(If he didn't make a poison and does not know how to, then who did?)"
+                    jump romero_choices
+
+                "Did you kill your father with that poison?":
+                    $ romero_kicked_out = True
+
+                    player "Romero, so you know how to make poisons. Did you kill your father with the poison you made?"
+                    romero "What? Did you not just read the letter??"
+                    player "Did you kill your father with the poison you were planning on using to kill yourself or not?"
+                    romero "You have no right accusing me of murdering my own father!!"
+                    romero "I should kill you right where you are now!"
+                    "A sharp void fills the air while the fire continues to crackle."
+                    romero "No, no, that was too much."
+                    player "So if you say you didn't kill your father, then-"
+                    romero "Get out... Don't come back until you found the real killer. Just do your fucking job."
+                    romero "LEAVE NOW!"
+                    "You get up and leave Romero. He no longer stares at you yet has his eyes locked to the flames once again."
+                    jump exit_romero_room
+
+                "Explain your relationship with Julieta.":
+                    player "Romero, you said you love Julieta in the letter. Can you explain your relationship with her to me?"
+                    romero "I do love Julieta. She is the one person I can truly trust to always make the right decisions."
+                    romero "Although she may be a bit naive at times, she still makes more rational choices that I could ever do for myself."
+                    romero "All you need to know is that I love her and would do anything for her."
+                    player "(Anything huh? Even murder his own father?)"
+                    jump romero_choices
+        # Romero suicide "note" end
 
 
         label exit_romero_room:
             #stop music fadeout 3.0
+            play music "audio/mystery.mp3"
             jump global_room
 
 #########
@@ -1841,7 +2134,7 @@ label end_chapter:
         "Lorenzo Fernandez":
             $ selected_murdurer = 2
             show Lorenzo
-            
+
             if notebook and inquired2 and dress and drug_recipe and mouth and romero_missing: # Lorenzo got caught with evidence
                 y "Why? You can't arrest me without cause!"
                 player "But I have all the evidence!"
